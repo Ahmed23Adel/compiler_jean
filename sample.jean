@@ -1,0 +1,48 @@
+// Variables
+x = 1   // here is a comment
+y = 7
+// Constants
+NAME = "A"
+VAR = 5
+ANOTHER_VAR = 6 // here is a comment
+ANOTHER_VAR2 = -4
+// Mathmatical expressionts
+z = x + y - y * VAR + x / ANOTHER_VAR^2 + |ANOTHER_VAR2| + y%2
+// If-then-else 
+if_var = 8
+(x==9) ? {
+    if_var = 9
+}
+!(x == 8) ?{
+    if_var = 10
+}
+!
+{
+    if_var = 11
+}
+
+//Block structure
+{	x = 8 
+    {
+        x = 9
+        
+    }
+}
+
+
+// Functions
+f(x: int, y : float) : int = x^2 +y 
+sum(num1: int, num2: int) : int = num1 + num2
+print_sum(num1: int, num2: int) = print(sum(num1, num2))
+complex_function(num1: int, num2: int) : int  =     
+{
+    sum = num1 + num2
+    return sum
+}
+c = 9 // here is a comment
+// here is a comment
+/*
+Some random commnets
+Some random commnets
+Some random commnets
+*/
