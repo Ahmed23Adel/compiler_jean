@@ -290,6 +290,29 @@ func lex_analyzer(input string) []tokenStruct {
 				fmt.Println(tokens)
 				fmt.Println(current_pos)
 				current_pos.column += 1
+			} else if isInt(string(input[i])){
+				counter1:=i
+				counter2:=0
+				if counter1+counter2<len(input){
+					for (string(input[counter1+counter2])>="0" && string(input[counter1+counter2]) <= "9") || input[counter1+counter2] == '.'{
+						counter2 +=1
+						//fmt.Println(string(input[counter1:counter1+counter2]))
+					}
+					fmt.Println(string(input[counter1:counter1+counter2]))
+					fmt.Println(counter2, "input: ",string(input[i]))
+
+				}
+				i += counter2-1
+				if isInt(string(input[counter1:counter1+counter2])){
+					tokens = append(tokens,tokenStruct{token_type: getToken(NUMBER), token_value: string(input[counter1:counter1+counter2]), token_pos: current_pos})
+					current_pos.column+=counter2
+				}
+				if isFloat(string(input[counter1:counter1+counter2])){
+					tokens = append(tokens,tokenStruct{token_type: getToken(FLOAT), token_value: string(input[counter1:counter1+counter2]), token_pos: current_pos})
+					current_pos.column+=counter2
+				}
+
+
 			}
 
 		}
