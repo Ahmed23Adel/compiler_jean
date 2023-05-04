@@ -182,9 +182,7 @@ func appendSeperator(tokens *[]string) {
 
 func handleOneLineComment(input *string, idx *int, current_pos *Position) {
 	// posGoNextLine(current_pos)
-	fmt.Println("one line comment", *idx)
 	*idx = findFirstRune((*input), (*idx), '\n') - 1
-	fmt.Println("one line comment", *idx)
 	appendSeperator(&tokens)
 }
 
@@ -238,14 +236,11 @@ func lex_analyzer(input string) []tokenStruct {
 	tokens := make([]tokenStruct, 0)
 	current_pos := Position{line: 0, column: 0}
 	for i := 0; i < len(input); i++ {
-		fmt.Println(tokens)
 		// if i > 50 {
 		// 	break
 		// }
 
-		fmt.Println(string(input[i]))
 		if i+2 < len(input) { // handle 3 characters
-			fmt.Println("3chars")
 			if handleMultiLetterToken(&input, &i, &current_pos, "and", &tokens, AND) { //
 				continue
 
@@ -261,10 +256,8 @@ func lex_analyzer(input string) []tokenStruct {
 			}
 		}
 		if i+1 < len(input) { // handle two characters
-			fmt.Println("2chars")
 			if string(input[i])+string(input[i+1]) == "//" {
 				handleOneLineComment(&input, &i, &current_pos)
-				fmt.Println(i)
 				continue
 
 			} else if string(input[i])+string(input[i+1]) == "/*" { // block comments
@@ -273,7 +266,6 @@ func lex_analyzer(input string) []tokenStruct {
 			}
 		}
 		if i < len(input) { // handle one character
-			fmt.Println("1chars")
 			if string(input[i]) == " " { // space
 				forwardPosOneSpace(&current_pos)
 				continue
