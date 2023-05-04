@@ -53,9 +53,9 @@ const (
 	MOD   // %
 	ABS   // |
 	//logical operators
-	AND // and
-	OR  // or
-	NOT // not
+	AND // and //TODO
+	OR  // or //TODO
+	NOT // not //TODO
 	// if then
 	OPEN_PARAN          // (
 	CLOSE_PARAN         // )
@@ -65,8 +65,7 @@ const (
 	EXCLAMATION_MARK    // !
 	//Block structure // DONE
 	// Functions
-	VAR_TYPES // : f(x: int)
-	COLON     // :
+	COLON // :
 	SEPERATOR
 )
 
@@ -75,11 +74,11 @@ var tokens = []string{
 	EOF:     "EOF",
 	ILLEGAL: "ILLEGAL",
 	// VARS
-	IDENT:  "IDENT", // TODO: REGEX
+	IDENT:  "IDENT",
 	EQUAL:  "EQUAL",
-	NUMBER: "VAR_NUMBER", // TODO: REGEX
-	FLOAT:  "VAR_FLOAT",  // TODO: REGEX
-	CHAR:   "VAR_CHAR",   // TODO: REGEX [a-zA-Z]
+	NUMBER: "VAR_NUMBER",
+	FLOAT:  "VAR_FLOAT",
+	CHAR:   "VAR_CHAR",
 	// Constants
 	CONST: "CONST",
 	// Mathmatical expressions
@@ -99,14 +98,19 @@ var tokens = []string{
 	NOT: "LOGICALOP_NOT", // not
 	// if then
 	QUESTION_MARK:       "IFREL_QUESTION_MARK",       // ?
-	OPEN_CURLY_BRACKET:  "IFREL_OPEN_CURLY_BRACKET",  // {
-	CLOSE_CURLY_BRACKET: "IFREL_CLOSE_CURLY_BRACKET", // }
+	OPEN_CURLY_BRACKET:  "SCOPE_OPEN_CURLY_BRACKET",  // {
+	CLOSE_CURLY_BRACKET: "SCOPE_CLOSE_CURLY_BRACKET", // }
 	EXCLAMATION_MARK:    "IFREL_EXCLAMATION_MARK",    // !
 	//Block structure // DONE
 	// Functions
-	VAR_TYPES: "VARTYPE", // : f(x: int)
-	COLON:     "COLON",   // :
+	COLON:     "COLON", // :
 	SEPERATOR: "SEPERATOR",
+}
+
+type tokenStruct struct {
+	token_type  string //, //idenb
+	token_value string //x
+	token_pos   Position
 }
 
 type Token int
@@ -159,61 +163,137 @@ type Position struct {
 	column int
 }
 
-func lex_analyzer(input string) []string {
-	tokens := make([]string, 0)
-	current_pos := Position{line: 0, column: 0}
-	for i := 0; i < len(input); i++ {
-		// do something with i and str[i]
+func posGoNextLine(pos *Position) {
+	(*pos).line = pos.line + 1
+	(*pos).column = 0
+}
 
-		// Handle Comment
-		if i+1 < len(input) {
-			if string(input[i])+string(input[i+1]) == "//" {
-				current_pos.line += 0
-				current_pos.column = 0
-				i = findFirstRune(input, i, '\n') - 1
-				if len(tokens) > 0 && tokens[len(tokens)-1] != getToken(SEPERATOR) {
-					tokens = append(tokens, getToken(SEPERATOR))
-				}
-				continue
-			}
-		}
+func appendSeperator(tokens *[]string) {
+	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1] != getToken(SEPERATOR) {
+		*tokens = append((*tokens), getToken(SEPERATOR))
+	}
+}
 
-		// handle /**/
-		if i+1 < len(input) {
-			if string(input[i])+string(input[i+1]) == "/*" {
-				current_pos.line += 0
-				current_pos.column = 0
-				i = findFirstStr(input, i, "*/") - 1
+func handleOneLineComment(input *string, idx *int, current_pos *Position) {
+	// posGoNextLine(current_pos)
+	*idx = findFirstRune((*input), (*idx), '\n') - 1
+	appendSeperator(&tokens)
+}
 
-				if len(tokens) > 0 && tokens[len(tokens)-1] != getToken(SEPERATOR) {
-					tokens = append(tokens, getToken(SEPERATOR))
-				}
+func handleBlockComment(input *string, idx *int, current_pos *Position) {
+	var numNewLines, distFromLastNewLine int
+	*idx, numNewLines, distFromLastNewLine = findFirstStr(*input, *idx, "*/")
+	(*current_pos).line += numNewLines
+	(*current_pos).column += distFromLastNewLine
 
-				continue
-			}
-		}
-		// space
-		if string(input[i]) == " " {
-			continue
-		}
-		if input[i] == '\n' {
-			if len(tokens) > 0 && tokens[len(tokens)-1] != getToken(SEPERATOR) {
-				tokens = append(tokens, getToken(SEPERATOR))
-			}
-			fmt.Println("NEW sep")
-			continue
-		}
+	if len(tokens) > 0 && tokens[len(tokens)-1] != getToken(SEPERATOR) {
+		tokens = append(tokens, getToken(SEPERATOR))
+	}
+}
 
-		if string(input[i]) == "y" {
-			tokens = append(tokens, getToken(IDENT))
-		}
+func forwardPosOneSpace(current_pos *Position) {
+	(*current_pos).column += 1
+}
 
-		fmt.Println(string(input[i]))
-		fmt.Println(tokens)
+func handleNewLine(current_pos *Position, tokens *[]tokenStruct) {
+	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1].token_type != getToken(SEPERATOR) {
+		*tokens = append((*tokens), tokenStruct{token_type: getToken(SEPERATOR), token_value: "\n", token_pos: *current_pos})
 	}
 
+	current_pos.line += 1
+	current_pos.column = 0
+}
+
+func handleOneLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]tokenStruct, token Token) bool {
+	if string((*input)[(*idx)]) == searchable {
+		fmt.Println("in handleOneLetterToken")
+		if searchable == "=" {
+			fmt.Println("=current_pos", current_pos)
+			fmt.Println(searchable)
+			fmt.Println(tokens)
+		}
+
+		(*tokens) = append((*tokens), tokenStruct{token_type: getToken(token), token_value: searchable, token_pos: *current_pos})
+		(*current_pos).column += 1
+		return true
+	}
+	return false
+}
+
+func lex_analyzer(input string) []tokenStruct {
+	tokens := make([]tokenStruct, 0)
+	current_pos := Position{line: 0, column: 0}
+	for i := 0; i < len(input); i++ {
+		// fmt.Println(string(input[i]))
+		if i+1 < len(input) {
+			// one line comments
+			if string(input[i])+string(input[i+1]) == "//" {
+				handleOneLineComment(&input, &i, &current_pos)
+				// fmt.Println("//current_pos", (current_pos))
+
+			} else if string(input[i])+string(input[i+1]) == "/*" { // block comments
+				handleBlockComment(&input, &i, &current_pos)
+				// fmt.Println("/*current_pos", (current_pos))
+
+			} else if string(input[i]) == " " { // space
+				forwardPosOneSpace(&current_pos)
+				// fmt.Println("spacecurrent_pos", (current_pos))
+
+			} else if input[i] == '\n' { // new line
+				handleNewLine(&current_pos, &tokens)
+				// fmt.Println("nnncurrent_pos", (current_pos))
+			} else if handleOneLetterToken(&input, &i, &current_pos, "+", &tokens, ADD) { // +
+				fmt.Println("+current_pos", (current_pos))
+			} else if handleOneLetterToken(&input, &i, &current_pos, "-", &tokens, SUB) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "*", &tokens, MUL) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "/", &tokens, DIV) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "^", &tokens, POWER) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "%", &tokens, MOD) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "|", &tokens, ABS) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "(", &tokens, OPEN_PARAN) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, ")", &tokens, CLOSE_PARAN) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "?", &tokens, QUESTION_MARK) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "{", &tokens, OPEN_CURLY_BRACKET) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "}", &tokens, CLOSE_CURLY_BRACKET) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "!", &tokens, EXCLAMATION_MARK) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, ":", &tokens, COLON) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "=", &tokens, EQUAL) { //
+
+			} else if string(input[i]) == "y" || string(input[i]) == "x" || string(input[i]) == "z" || string(input[i]) == "u" { // identifier token
+				tokens = append(tokens, tokenStruct{token_type: getToken(IDENT), token_value: string(input[i]), token_pos: current_pos})
+				fmt.Println(tokens)
+				fmt.Println(current_pos)
+				current_pos.column += 1
+			}
+
+		}
+
+		// fmt.Println(string(input[i]))
+
+		// break
+		// if i > 50 {
+		// 	break
+		// }
+	}
+	fmt.Println(tokens)
 	return tokens
 }
+
+//  // : f(x: int)
+// 	COLON     // :
 
 func findFirstRune(input string, startIndex int, searchable rune) int {
 	for i := startIndex; i < len(input); i++ {
@@ -226,16 +306,24 @@ func findFirstRune(input string, startIndex int, searchable rune) int {
 	return -1
 }
 
-func findFirstStr(input string, startIndex int, searchable string) int {
+func findFirstStr(input string, startIndex int, searchable string) (int, int, int) {
+	numNewLines := 0
+	distFromLastNewLine := 0
+
 	for i := startIndex; i < len(input); i++ {
 		if i+1 < len(input) {
+			if input[i] == '\n' {
+				numNewLines += 1
+				distFromLastNewLine = 0
+			}
+			distFromLastNewLine += 1
 			if string(input[i])+string(input[i+1]) == searchable {
-				return i
+				return i + 1, numNewLines, distFromLastNewLine
 			}
 		}
 
 	}
-	return -1
+	return -1, -1, -1
 }
 
 func main() {
