@@ -182,9 +182,7 @@ func appendSeperator(tokens *[]string) {
 
 func handleOneLineComment(input *string, idx *int, current_pos *Position) {
 	// posGoNextLine(current_pos)
-	fmt.Println("one line comment", *idx)
 	*idx = findFirstRune((*input), (*idx), '\n') - 1
-	fmt.Println("one line comment", *idx)
 	appendSeperator(&tokens)
 }
 
@@ -222,7 +220,9 @@ func handleOneLetterToken(input *string, idx *int, current_pos *Position, search
 }
 
 func handleMultiLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]tokenStruct, token Token) bool {
+	// fmt.Println("k0", *idx+len(searchable), len(*input))
 	if *idx+len(searchable) < len(*input)-1 {
+		// fmt.Println("k1", string((*input)[(*idx):(*idx)+len(searchable)]), searchable)
 		if string((*input)[(*idx):(*idx)+len(searchable)]) == searchable {
 			(*tokens) = append((*tokens), tokenStruct{token_type: getToken(token), token_value: searchable, token_pos: *current_pos})
 			(*current_pos).column += len(searchable)
@@ -238,104 +238,78 @@ func lex_analyzer(input string) []tokenStruct {
 	tokens := make([]tokenStruct, 0)
 	current_pos := Position{line: 0, column: 0}
 	for i := 0; i < len(input); i++ {
-		fmt.Println(tokens)
-		// if i > 50 {
-		// 	break
-		// }
+		// fmt.Println(string(input[i]))
+		if i < len(input) { // handle one character
+			// fmt.Println("single line character")
+			if string(input[i]) == " " { // space
+				forwardPosOneSpace(&current_pos)
+			} else if input[i] == '\n' { // new line
+				handleNewLine(&current_pos, &tokens)
+				// fmt.Println("nnncurrent_pos", (current_pos))
+			} else if handleOneLetterToken(&input, &i, &current_pos, "+", &tokens, ADD) { // +
+				fmt.Println("+current_pos", (current_pos))
+			} else if handleOneLetterToken(&input, &i, &current_pos, "-", &tokens, SUB) { //
 
-		fmt.Println(string(input[i]))
-		if i+2 < len(input) { // handle 3 characters
-			fmt.Println("3chars")
-			if handleMultiLetterToken(&input, &i, &current_pos, "and", &tokens, AND) { //
-				continue
+			} else if handleOneLetterToken(&input, &i, &current_pos, "*", &tokens, MUL) { //
 
-			} else if handleMultiLetterToken(&input, &i, &current_pos, "or", &tokens, OR) { //
-				continue
+			} else if handleOneLetterToken(&input, &i, &current_pos, "/", &tokens, DIV) { //
 
-			} else if handleMultiLetterToken(&input, &i, &current_pos, "not", &tokens, NOT) { //
-				continue
+			} else if handleOneLetterToken(&input, &i, &current_pos, "^", &tokens, POWER) { //
 
-			} else if (string(input[i]) == "'" && string(input[i+2]) == "'") && isChar(string(input[i+1])) {
-				handleChar(&current_pos, &input, &i, &tokens)
-				continue
+			} else if handleOneLetterToken(&input, &i, &current_pos, "%", &tokens, MOD) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "|", &tokens, ABS) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "(", &tokens, OPEN_PARAN) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, ")", &tokens, CLOSE_PARAN) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "?", &tokens, QUESTION_MARK) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "{", &tokens, OPEN_CURLY_BRACKET) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "}", &tokens, CLOSE_CURLY_BRACKET) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "!", &tokens, EXCLAMATION_MARK) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, ":", &tokens, COLON) { //
+
+			} else if handleOneLetterToken(&input, &i, &current_pos, "=", &tokens, EQUAL) { //
+
 			}
 		}
 		if i+1 < len(input) { // handle two characters
-			fmt.Println("2chars")
+			// fmt.Println("two line character")
 			if string(input[i])+string(input[i+1]) == "//" {
 				handleOneLineComment(&input, &i, &current_pos)
-				fmt.Println(i)
-				continue
+				// fmt.Println("//current_pos", (current_pos))
 
 			} else if string(input[i])+string(input[i+1]) == "/*" { // block comments
 				handleBlockComment(&input, &i, &current_pos)
-				continue
-			}
-		}
-		if i < len(input) { // handle one character
-			fmt.Println("1chars")
-			if string(input[i]) == " " { // space
-				forwardPosOneSpace(&current_pos)
-				continue
-			} else if input[i] == '\n' { // new line
-				handleNewLine(&current_pos, &tokens)
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "+", &tokens, ADD) { // +
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "-", &tokens, SUB) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "*", &tokens, MUL) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "/", &tokens, DIV) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "^", &tokens, POWER) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "%", &tokens, MOD) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "|", &tokens, ABS) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "(", &tokens, OPEN_PARAN) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, ")", &tokens, CLOSE_PARAN) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "?", &tokens, QUESTION_MARK) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "{", &tokens, OPEN_CURLY_BRACKET) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "}", &tokens, CLOSE_CURLY_BRACKET) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "!", &tokens, EXCLAMATION_MARK) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, ":", &tokens, COLON) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "=", &tokens, EQUAL) { //
-				continue
+				// fmt.Println("/*current_pos", (current_pos))
 
 			}
 		}
+		if i+2 < len(input) { // handle 3 characters
+			// fmt.Println("3 line character")
+			if handleMultiLetterToken(&input, &i, &current_pos, "and", &tokens, AND) { //
 
+			} else if handleMultiLetterToken(&input, &i, &current_pos, "or", &tokens, OR) { //
+
+			} else if handleMultiLetterToken(&input, &i, &current_pos, "not", &tokens, NOT) { //
+
+			} else if (string(input[i]) == "'" && string(input[i+2]) == "'") && isChar(string(input[i+1])) {
+				handleChar(&current_pos, &input, &i, &tokens)
+
+			}
+		}
+		// else multi-letter int float identifiers
+		// fmt.Println("else line character")
 		if isInt(string(input[i])) {
 			handleRealNumbers(&i, &tokens, &input, &current_pos)
-			continue
 
 		} else {
 			handleIdentifier(&i, &input, &tokens, &current_pos)
-			continue
 		}
 
 	}
@@ -346,7 +320,7 @@ func handleIdentifier(i *int, input *string, tokens *[]tokenStruct, current_pos 
 	counter1 := *i
 	counter2 := 0
 	if counter1+counter2 < len((*input)) && isCharaToZ(string((*input)[*i])) {
-
+		fmt.Println("k1")
 		for (isCharaToZ(string((*input)[counter1+counter2]))) || (*input)[counter1+counter2] == '_' || ((*input)[counter1+counter2] >= '0') && ((*input)[counter1+counter2] <= '9') {
 			counter2 += 1
 
@@ -384,12 +358,17 @@ func handleNumber(input *string, i *int, tokens *[]tokenStruct) int {
 	if counter1+counter2 < len((*input)) {
 		for (string((*input)[counter1+counter2]) >= "0" && string((*input)[counter1+counter2]) <= "9") || (*input)[counter1+counter2] == '.' {
 			counter2 += 1
-
+			//fmt.Println(string(input[counter1:counter1+counter2]))
 		}
+		fmt.Println(string((*input)[counter1 : counter1+counter2]))
+		fmt.Println(counter2, "input: ", string((*input)[*i]))
 
 	}
 	return (counter2)
 }
+
+//  // : f(x: int)
+// 	COLON     // :
 
 func findFirstRune(input string, startIndex int, searchable rune) int {
 	for i := startIndex; i < len(input); i++ {
@@ -425,6 +404,33 @@ func findFirstStr(input string, startIndex int, searchable string) (int, int, in
 func main() {
 	sample_str := readSample("sample.jean")
 	sample_str = sample_str + "\n"
+	// sample_str = removeComments(sample_str)
+	// fmt.Println(sample_str)
+
 	tokens := lex_analyzer(sample_str)
 	fmt.Println(tokens)
+	// fmt.Println(sample_str)
+	// fmt.Println(sample_str[0], sample_str[1])
+	// fmt.Println(sample_str[0] == byte('x'))
+
+	// fmt.Println(sample_str)
+	// tst := "_var_name"
+	// fmt.Println(isIdentifier(tst))
+	// // tst := "x = 13.0 + 16.5 \n y = 12.6 - 10.4 + .3 + 0.1 + 9 \n"
+	// tstReg := regexp.MustCompile(`\d*\.\d+`) // 0.2 .2
+
+	// // Remove single-line comments
+	// fmt.Println(tstReg.ReplaceAllString(tst, "FLOAT"))
+	// // fmt.Println(reflect.TypeOf(sample_str))
+	// fmt.Println(sample_str[0], sample_str[1], sample_str[2], sample_str[4], sample_str[55])
+	// age1 = 16.85.5..9(%|and| (| } | :| or space | \n)5
+	// age2 = age1/5
+	//(age)
+	//"any /" "
+
+	// x = - 9
+	// x = -y
+	// x = - y - -x
+
+	// case operator
 }
