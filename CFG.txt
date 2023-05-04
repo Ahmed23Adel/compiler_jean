@@ -1,0 +1,53 @@
+code --> stmt code | None   # the whole program
+
+
+# regular statements
+stmt --> var = expr  
+stmt --> expr    # only for functions
+
+expr --> term add_op expr
+expr --> term 
+
+term --> factor mult_op term
+term --> factor
+
+factor --> ( expr )
+factor --> num
+factor --> var
+
+# conditional statements
+stmt --> ( expr )? {code} else  # if 
+else --> !(expr)? {code} else   # else if 
+else --> !(code)                # only else
+else --> None                   # No else
+
+
+# loops
+stmt --> var : *(expr)? { code }
+
+
+# break stmt 
+stmt --> break 
+
+# Functions declaration 
+stmt --> var (args)  ret = expr   
+stmt --> var (args)  ret = {code}
+
+ret --> None | : dtype 
+
+args --> None | var : dtype , args  
+
+# Function calls
+expr --> var(input) 
+input --> var | num , input | None  
+
+
+
+####
+var variable
+num number
+( )
+{ }
+dtype 
+break 
+op operator
