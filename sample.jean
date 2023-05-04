@@ -1,12 +1,13 @@
+NAME = 'A'
 // Variables
 /*
 ahmed
 */
 x = 1   // here is a comment
 y = 7   /* block comments */
-u = x + x - y * x / x ^ x  + | - y|
+u = 1 + 2 - 6 * 8 / 9 ^ 5  + | - 5|
 // Constants
-NAME = "A"
+NAME = 'A'
 VAR = 5
 ANOTHER_VAR = 6 // here is a comment
 ANOTHER_VAR2 = -4

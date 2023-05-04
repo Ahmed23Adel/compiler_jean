@@ -42,8 +42,6 @@ const (
 	NUMBER
 	FLOAT
 	CHAR
-	// Constants
-	CONST
 	// Mathmatical expressions
 	ADD   // +
 	SUB   // -
@@ -76,11 +74,9 @@ var tokens = []string{
 	// VARS
 	IDENT:  "IDENT",
 	EQUAL:  "EQUAL",
-	NUMBER: "VAR_NUMBER",
-	FLOAT:  "VAR_FLOAT",
-	CHAR:   "VAR_CHAR",
-	// Constants
-	CONST: "CONST",
+	NUMBER: "VAL_NUMBER",
+	FLOAT:  "VAL_FLOAT",
+	CHAR:   "VAL_CHAR",
 	// Mathmatical expressions
 	ADD:   "MATHOP_ADD",   // +
 	SUB:   "MATHOP_SUB",   // -
@@ -206,16 +202,24 @@ func handleNewLine(current_pos *Position, tokens *[]tokenStruct) {
 
 func handleOneLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]tokenStruct, token Token) bool {
 	if string((*input)[(*idx)]) == searchable {
-		fmt.Println("in handleOneLetterToken")
-		if searchable == "=" {
-			fmt.Println("=current_pos", current_pos)
-			fmt.Println(searchable)
-			fmt.Println(tokens)
-		}
-
 		(*tokens) = append((*tokens), tokenStruct{token_type: getToken(token), token_value: searchable, token_pos: *current_pos})
 		(*current_pos).column += 1
 		return true
+	}
+	return false
+}
+
+func handleMultiLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]tokenStruct, token Token) bool {
+	// fmt.Println("k0", *idx+len(searchable), len(*input))
+	if *idx+len(searchable) < len(*input)-1 {
+		// fmt.Println("k1", string((*input)[(*idx):(*idx)+len(searchable)]), searchable)
+		if string((*input)[(*idx):(*idx)+len(searchable)]) == searchable {
+			(*tokens) = append((*tokens), tokenStruct{token_type: getToken(token), token_value: searchable, token_pos: *current_pos})
+			(*current_pos).column += len(searchable)
+			*idx += len(searchable) - 1
+			return true
+		}
+
 	}
 	return false
 }
@@ -224,7 +228,7 @@ func lex_analyzer(input string) []tokenStruct {
 	tokens := make([]tokenStruct, 0)
 	current_pos := Position{line: 0, column: 0}
 	for i := 0; i < len(input); i++ {
-		// fmt.Println(string(input[i]))
+		fmt.Println(string(input[i]))
 		if i+1 < len(input) {
 			// one line comments
 			if string(input[i])+string(input[i+1]) == "//" {
@@ -272,6 +276,15 @@ func lex_analyzer(input string) []tokenStruct {
 
 			} else if handleOneLetterToken(&input, &i, &current_pos, "=", &tokens, EQUAL) { //
 
+			} else if handleMultiLetterToken(&input, &i, &current_pos, "and", &tokens, AND) { //
+
+			} else if handleMultiLetterToken(&input, &i, &current_pos, "or", &tokens, OR) { //
+
+			} else if handleMultiLetterToken(&input, &i, &current_pos, "not", &tokens, NOT) { //
+
+			} else if (string(input[i]) == "'" && string(input[i+2]) == "'") && isChar(string(input[i+1])) {
+				handleChar(&current_pos, &input, &i, &tokens)
+
 			} else if string(input[i]) == "y" || string(input[i]) == "x" || string(input[i]) == "z" || string(input[i]) == "u" { // identifier token
 				tokens = append(tokens, tokenStruct{token_type: getToken(IDENT), token_value: string(input[i]), token_pos: current_pos})
 				fmt.Println(tokens)
@@ -281,8 +294,10 @@ func lex_analyzer(input string) []tokenStruct {
 
 		}
 
+		// "ahmed \" yousef"
+		// "ahmed" + "yousef"
 		// fmt.Println(string(input[i]))
-
+		// "     ajflkasdjf; \" fsdklasd "
 		// break
 		// if i > 50 {
 		// 	break
@@ -290,6 +305,13 @@ func lex_analyzer(input string) []tokenStruct {
 	}
 	fmt.Println(tokens)
 	return tokens
+}
+
+func handleChar(current_pos *Position, input *string, idx *int, tokens *[]tokenStruct) {
+	current_pos.column += 1
+	(*tokens) = append((*tokens), tokenStruct{token_type: getToken(CHAR), token_value: string((*input)[(*idx)+1]), token_pos: (*current_pos)})
+	(*idx) += 3
+	(*current_pos).column += 2
 }
 
 //  // : f(x: int)
