@@ -164,7 +164,20 @@ func lex_analyzer(input string) []TokenStruct {
 		// if i > 50 {
 		// 	break
 		// }
-
+		if input[i] == '-' && isInt(string(input[i+1])) {
+			i += 1
+			current_pos.column += 1
+			handleRealNumbers(&i, &tokens, &input, &current_pos)
+			tokens[len(tokens)-1].Val = "-" + tokens[len(tokens)-1].Val
+			continue
+		}
+		if input[i] == '-' && isInt(string(input[i+2])) {
+			i += 2
+			current_pos.column += 2
+			handleRealNumbers(&i, &tokens, &input, &current_pos)
+			tokens[len(tokens)-1].Val = "-" + tokens[len(tokens)-1].Val
+			continue
+		}
 		if i+2 < len(input) { // handle 3 characters
 			if handleMultiLetterToken(&input, &i, &current_pos, "and", &tokens, AND) { //
 				continue
