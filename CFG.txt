@@ -3,7 +3,7 @@ code --> stmt code | None   # the whole program
 
 # regular statements
 stmt --> var = expr  
-stmt --> expr    # only for functions
+stmt --> expr    # only for functions not used rn
 
 expr --> term add_op expr
 expr --> term 
@@ -14,6 +14,7 @@ term --> factor
 factor --> ( expr )
 factor --> num
 factor --> var
+
 
 # conditional statements
 stmt --> ( expr )? {code} else  # if 
