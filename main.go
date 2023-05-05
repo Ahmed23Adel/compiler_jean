@@ -7,14 +7,7 @@ import (
 
 
 
-
 func main()  {
-
-
-	
-	// x = x + ( 5 * 3 ) + ( 2  * 4)
-	// y = 4 + 2 * x
-
 	
 	tokensArray := []TokenStruct{ {Type :  (VAR) , Val : "x" }, {Type :  ASSIGN , Val : "=" }, 
 	{Type : VAR , Val : "x" }, {Type : ADD , Val : "+" },  {Type : OPEN_PARAN , Val :  "(" }, {Type : NUMBER , Val : "5" }, {Type : MUL , Val : "*" }, {Type : NUMBER , Val : "3" },

@@ -7,7 +7,7 @@ import (
 
 func codeParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node , err error) {
 	
-	option1 := []parserFunction{stmtParser , codeParser}
+	option1 := []parserFunction{stmtParser , codeParser}   // code --> stmt code | None  
 	option2 := []parserFunction{}
 
 	options := [][]parserFunction{option1,option2}
@@ -27,7 +27,7 @@ func codeParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Nod
 }
 
 func stmtParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node , err error) {  
-	option1 := []parserFunction{varParser,assignParser,exprParser} 
+	option1 := []parserFunction{varParser,assignParser,exprParser}    // stmt --> var = expr  sep
 
 	options := [][]parserFunction{option1}
 
@@ -46,9 +46,9 @@ func stmtParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Nod
 
 
 func exprParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode  *Node  , err error) {  
-	option1 := []parserFunction{termParser,addOpParser,exprParser}
-	option2 := []parserFunction{termParser}
-
+	option1 := []parserFunction{termParser,addOpParser,exprParser}   // expr --> term add_op expr
+	option2 := []parserFunction{termParser}                          // expr --> term 
+ 
 	options := [][]parserFunction{option1,option2}
 	for _ ,option := range options {
 		//print("expression parser Trying option ",i,"\n")
@@ -64,9 +64,9 @@ func exprParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode  *No
 }
 
 func factorParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode  *Node   , err error) {
-	option1 := []parserFunction{openParanParser,exprParser,closedParanParser}
-	option2 := []parserFunction{varParser}
-	option3 := []parserFunction{numParser}
+	option1 := []parserFunction{openParanParser,exprParser,closedParanParser}   // factor --> ( expr )
+	option2 := []parserFunction{varParser}									    // factor --> var
+	option3 := []parserFunction{numParser}										// factor --> num
 
 	options := [][]parserFunction{option1,option2,option3}
 
@@ -84,8 +84,8 @@ func factorParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode  *
 }
 
 func termParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node , err error) {  
-	option1 := []parserFunction{factorParser,multOpParser,termParser}
-	option2 := []parserFunction{factorParser}
+	option1 := []parserFunction{factorParser,multOpParser,termParser}    // term --> factor mult_op term
+	option2 := []parserFunction{factorParser}                            // term --> factor
 
 	options := [][]parserFunction{option1,option2}
 
