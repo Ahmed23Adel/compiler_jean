@@ -1,6 +1,6 @@
 package main
 
-import(
+import (
 	"fmt"
 )
 
@@ -14,7 +14,7 @@ func main()  {
 	// y = 4 + 2 * x
 
 	
-	tokensArray := []Token{ {Type :  VAR , Val : "x" }, {Type : ASSIGN , Val : "=" }, 
+	tokensArray := []tokenStruct{ {Type :  VAR , Val : "x" }, {Type : ASSIGN , Val : "=" }, 
 	{Type : VAR , Val : "x" }, {Type : ADD_OP , Val : "+" },  {Type : LEFT_BRACKET , Val :  "(" }, {Type : NUM , Val : "5" }, {Type : MULT_OP , Val : "*" }, {Type : NUM , Val : "3" },
 	{Type : RIGHT_BRACKET , Val : ")" }, {Type : ADD_OP , Val : "+" }, 
 	{Type: LEFT_BRACKET , Val : "(" }, {Type : NUM , Val : "2" }, 

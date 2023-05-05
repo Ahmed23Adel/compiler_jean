@@ -17,7 +17,7 @@ const  (
 	RIGHT_BRACKET  = ")"
 )
 
-type Token struct {
+type tokenStruct struct {
 	Type string 
 	Val string
 }

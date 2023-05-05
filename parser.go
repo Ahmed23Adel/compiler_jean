@@ -1,13 +1,13 @@
 package main
 
-import(
+import (
 	"errors"
 	"fmt"
 )
 
-type parserFunction func(start int ,tokenArray  []Token ) (end int,node *Node ,err error)
+type parserFunction func(start int ,tokenArray  []tokenStruct ) (end int,node *Node ,err error)
 
-func parseSequential(start int ,parsers []parserFunction ,tokenArray  []Token ) (end int,currentNode *Node ,err error) {
+func parseSequential(start int ,parsers []parserFunction ,tokenArray  []tokenStruct ) (end int,currentNode *Node ,err error) {
 	startPoint := start
 
 
@@ -25,7 +25,7 @@ func parseSequential(start int ,parsers []parserFunction ,tokenArray  []Token ) 
 }
 
 
-func parseDocument(tokenArray []Token)  {  
+func parseDocument(tokenArray []tokenStruct)  {  
 	end ,CFG ,err := codeParser(0,tokenArray)
 	if err != nil   {
 		fmt.Println("Failed to parse")
