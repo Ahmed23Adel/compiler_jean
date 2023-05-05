@@ -21,7 +21,7 @@ func printNode(node *Node, visited map[*Node]bool, depth int , tokenArray  []Tok
 		if node.start == -1 {
 			fmt.Printf("%s ,Contents :  %s \n", node.name , "None") 
 		} else {
-			fmt.Printf("%s ,Contents :  %s \n", node.name , tokenArray[node.start].Val)
+			fmt.Printf("%s ,type: %s ,Contents :  '%s' \n", node.name ,tokenArray[node.start].Type ,tokenArray[node.start].Val)
 		}
 	}else {
 		fmt.Printf("%s \n", node.name ) 

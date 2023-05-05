@@ -39,7 +39,7 @@ func parseDocument(tokenArray []TokenStruct)  {
 		println("parser finished before the end of the document")
 		println("parser ended at ",end , " and document ended at ",len(tokenArray))
 	}else {
-		printTree(CFG , tokenArray)
+		//printTree(CFG , tokenArray)
 		PrintGraph(CFG, tokenArray)
 		println("parser succeeded")
 	}

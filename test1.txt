@@ -10,7 +10,7 @@ z = 4
     jihad2 = 0
     jihad2 = x +y +z
 }
-!(0) ? {   // else if 0
+!(x == 4) ? {   // else if x == 4
     jihad3 = 1
 }
 ! {        // else
