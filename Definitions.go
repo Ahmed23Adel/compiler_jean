@@ -7,9 +7,6 @@ type Node struct {
 	adjacent []*Node
 }
 
-
-
-
 const (
 	EOF                 = "end of file"
 	ILLEGAL             = "illegal"
@@ -24,7 +21,7 @@ const (
 	DIV                 = "div (/)"
 	POWER               = "power (^)"
 	MOD                 = "mod (%)"
-	ABS                 = "abs (|)"
+	ABS                 = "abs"
 	AND                 = "and"
 	OR                  = "or"
 	NOT                 = "not"
@@ -40,18 +37,19 @@ const (
 	FLT                 = "flt"
 	STR                 = "str"
 	COMMA               = "comma (,)"
-	COMP               = "comparator"
-
+	COMP                = "comparator(==)"
+	BITAND              = "Bitwise And"
+	BITOR               = "Bitwise Or(|)"
+	GT               = "Greater than(>)"
+	LT               = "Less than(<)"
+	GTE               = "Greater than or Equal(>=)"
+	LTE               = "Less than or Equal(<=)"
 )
 
-
-
-
 type TokenStruct struct {
-	Type Token //,
+	Type Token  //,
 	Val  string //x
 	Pos  Position
 }
-
 
 type Token string

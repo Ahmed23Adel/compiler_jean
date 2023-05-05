@@ -175,7 +175,9 @@ func lex_analyzer(input string) []TokenStruct {
 			} else if handleMultiLetterToken(&input, &i, &current_pos, "not", &tokens, NOT) { //
 				continue
 
-			} else if (string(input[i]) == "'" && string(input[i+2]) == "'") && isChar(string(input[i+1])) {
+			}else if handleMultiLetterToken(&input, &i, &current_pos, "abs", &tokens, ABS) { //
+				continue
+			}  else if (string(input[i]) == "'" && string(input[i+2]) == "'") && isChar(string(input[i+1])) {
 				handleChar(&current_pos, &input, &i, &tokens)
 				continue
 			}
@@ -191,6 +193,14 @@ func lex_analyzer(input string) []TokenStruct {
 			}
 			if string(input[i])+string(input[i+1]) == "==" {
 				handleComparator(&i, &input, &tokens, &current_pos)
+				continue
+			}
+			if string(input[i])+string(input[i+1]) == ">=" {
+				handleGTE(&i, &input, &tokens, &current_pos)
+				continue
+			}
+			if string(input[i])+string(input[i+1]) == "<=" {
+				handleLTE(&i, &input, &tokens, &current_pos)
 				continue
 			}
 		}
@@ -220,7 +230,7 @@ func lex_analyzer(input string) []TokenStruct {
 			} else if handleOneLetterToken(&input, &i, &current_pos, "%", &tokens, MOD) { //
 				continue
 
-			} else if handleOneLetterToken(&input, &i, &current_pos, "|", &tokens, ABS) { //
+			} else if handleOneLetterToken(&input, &i, &current_pos, "|", &tokens, BITOR) { //
 				continue
 
 			} else if handleOneLetterToken(&input, &i, &current_pos, "(", &tokens, OPEN_PARAN) { //
@@ -246,8 +256,13 @@ func lex_analyzer(input string) []TokenStruct {
 
 			} else if handleOneLetterToken(&input, &i, &current_pos, "=", &tokens, ASSIGN) { //
 				continue
-
-			}
+			}else if handleOneLetterToken(&input, &i, &current_pos, "&", &tokens, BITAND) { //
+				continue
+			}else if handleOneLetterToken(&input, &i, &current_pos, ">", &tokens, GT) { //
+				continue
+			}else if handleOneLetterToken(&input, &i, &current_pos, "<", &tokens, LT) { //
+				continue
+			}		
 		}
 
 		if isInt(string(input[i])) {
@@ -263,7 +278,17 @@ func lex_analyzer(input string) []TokenStruct {
 	return tokens
 }
 func handleComparator(i *int, input *string, tokens *[]TokenStruct, current_pos *Position) {
-	(*tokens) = append((*tokens), TokenStruct{Type: (COMP), Val: string((*input)[*i : *i+1]), Pos: *current_pos})
+	(*tokens) = append((*tokens), TokenStruct{Type: (COMP), Val: string((*input)[*i : *i+2]), Pos: *current_pos})
+	current_pos.column += 2
+	*i += 1
+}
+func handleGTE(i *int, input *string, tokens *[]TokenStruct, current_pos *Position) {
+	(*tokens) = append((*tokens), TokenStruct{Type: (GTE), Val: string((*input)[*i : *i+2]), Pos: *current_pos})
+	current_pos.column += 2
+	*i += 1
+}
+func handleLTE(i *int, input *string, tokens *[]TokenStruct, current_pos *Position) {
+	(*tokens) = append((*tokens), TokenStruct{Type: (LTE), Val: string((*input)[*i : *i+2]), Pos: *current_pos})
 	current_pos.column += 2
 	*i += 1
 }
