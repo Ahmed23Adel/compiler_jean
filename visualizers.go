@@ -34,17 +34,17 @@ func printNode(node *Node, visited map[*Node]bool, depth int , tokenArray  []Tok
 	}
 }
 
-func printTree(node *Node , tokenArray  []TokenStruct) {
-    // Print the current node
-    print("node name: " , node.name, ",Contents: ("  )
-	for i := node.start; i < node.end; i++ {
-		print( tokenArray[i].Val , " ")
-	}
-	println(")")
-    // Print the adjacent nodes recursively
-	println("Children : ")
-    for _, adj := range node.adjacent {
-        printTree(adj , tokenArray)
-    }
-	println("End of node ",node.name)
-}
+// func printTree(node *Node , tokenArray  []TokenStruct) {
+//     // Print the current node
+//     print("node name: " , node.name, ",Contents: ("  )
+// 	for i := node.start; i < node.end; i++ {
+// 		print( tokenArray[i].Val , " ")
+// 	}
+// 	println(")")
+//     // Print the adjacent nodes recursively
+// 	println("Children : ")
+//     for _, adj := range node.adjacent {
+//         printTree(adj , tokenArray)
+//     }
+// 	println("End of node ",node.name)
+// }

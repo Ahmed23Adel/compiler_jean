@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"fmt"
+	//"fmt"
 )
 
 func codeParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node , err error) {
@@ -15,7 +15,7 @@ func codeParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Nod
 	for _ ,option := range options {
 		end ,currentNode ,err = parseSequential(start,option,tokenArray)
 			if err == nil {
-				fmt.Println("Code parser succeeded")
+				//fmt.Println("Code parser succeeded")
 				currentNode.name = "code"
 				return end , currentNode ,nil
 			}
@@ -34,7 +34,7 @@ func stmtParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Nod
 	for _ ,option := range options {
 		end ,currentNode ,err = parseSequential(start,option,tokenArray)
 		if err == nil {
-				fmt.Println("Statement parser succeeded")
+				//fmt.Println("Statement parser succeeded")
 				currentNode.name = "stmt"
 				return end , currentNode,nil
 		}

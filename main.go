@@ -20,9 +20,11 @@ func main() {
 	}
 	
 	// print the tokens
+	fmt.Println("Tokens:")
 	for _, token := range arraysWithoutSep {
 		fmt.Println(token.Type, token.Val)
 	}
+	fmt.Println("Listed all tokens")
 	parseDocument(arraysWithoutSep)
 
 }
