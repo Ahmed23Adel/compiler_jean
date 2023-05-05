@@ -40,10 +40,10 @@ const (
 	COMP                = "comparator(==)"
 	BIT_AND             = "Bitwise And"
 	BIT_OR              = "Bitwise Or(|)"
-	GT                     = "Greater than(>)"
-	LT                     = "Less than(<)"
-	GTE                   = "Greater than or Equal(>=)"
-	LTE                   = "Less than or Equal(<=)"
+	GT                  = "Greater than(>)"
+	LT                  = "Less than(<)"
+	GTE                 = "Greater than or Equal(>=)"
+	LTE                 = "Less than or Equal(<=)"
 )
 
 type TokenStruct struct {
