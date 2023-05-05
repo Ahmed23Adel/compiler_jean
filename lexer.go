@@ -178,7 +178,7 @@ func lex_analyzer(input string) []TokenStruct {
 			tokens[len(tokens)-1].Val = "-" + tokens[len(tokens)-1].Val
 			continue
 		}
-		if i+5 < len(input) { // handle 5 characters
+		if i+5 < len(input) { // handle 6 characters
 			if handleMultiLetterToken(&input, &i, &current_pos, "return", &tokens, RETURN) { //
 				continue
 			}
