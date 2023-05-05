@@ -12,7 +12,7 @@ func numParser(start int ,tokenArray  []Token ) (end int, currentNode *Node , er
 		return end ,currentNode ,nil
 	} 
 	//println("Number parser failed")
-	return -1 ,nil ,errors.New("Failed to parse")
+	return -1 ,nil ,errors.New("failed to parse")
 }
 
 // varParser: checks if the token at the start index is a variable, if it is it appends to the tree
@@ -23,8 +23,8 @@ func varParser(start int ,tokenArray  []Token ) (end int,currentNode *Node ,err 
 		currentNode = &Node{start,end,"variable-terminal",[]*Node{}}
 		return end ,currentNode ,nil
 	}
-	//fmt.Println("Failed to parse a variable")
-	return -1 ,nil , errors.New("Failed to parse")  
+	//fmt.Println("failed to parse a variable")
+	return -1 ,nil , errors.New("failed to parse")  
 }
 
 
@@ -36,8 +36,8 @@ func addOpParser(start int ,tokenArray  []Token ) (end int,currentNode *Node ,er
 		currentNode = &Node{start,end,"addition operator-terminal",[]*Node{}}
 		return end ,currentNode ,nil
 	}  
-	//fmt.Println("Failed to parse an operator")
-	return -1 ,nil , errors.New("Failed to parse")  
+	//fmt.Println("failed to parse an operator")
+	return -1 ,nil , errors.New("failed to parse")  
 }
 
 // multOpParser: checks if the token at the start index is a multiplication operator, if it is it appends to the tree
@@ -48,8 +48,8 @@ func multOpParser(start int ,tokenArray  []Token ) (end int,currentNode *Node ,e
 		currentNode = &Node{start,end,"multiplication operator-terminal",[]*Node{}}
 		return end ,currentNode ,nil
 	}
-	//fmt.Println("Failed to parse an operator")
-	return -1 ,nil , errors.New("Failed to parse")  
+	//fmt.Println("failed to parse an operator")
+	return -1 ,nil , errors.New("failed to parse")  
 
 }
 
@@ -60,8 +60,8 @@ func assignParser(start int ,tokenArray  []Token ) (end int,currentNode *Node ,e
 		currentNode = &Node{start,end,"assign-terminal",[]*Node{}}
 		return end ,currentNode ,nil
 	}
-	//fmt.Println("Failed to parse an assign")
-	return -1 ,nil , errors.New("Failed to parse")  
+	//fmt.Println("failed to parse an assign")
+	return -1 ,nil , errors.New("failed to parse")  
 }
 
 func lbParser(start int ,tokenArray  []Token ) (end int,currentNode *Node ,err error) {
@@ -71,7 +71,7 @@ func lbParser(start int ,tokenArray  []Token ) (end int,currentNode *Node ,err e
 		currentNode = &Node{start,end,"left bracket-terminal",[]*Node{}}
 		return end ,currentNode ,nil
 	}
-	return -1 ,nil , errors.New("Failed to parse")  	
+	return -1 ,nil , errors.New("failed to parse")  	
 }
 
 func rbParser(start int ,tokenArray  []Token ) (end int,currentNode *Node ,err error) {
@@ -81,6 +81,6 @@ func rbParser(start int ,tokenArray  []Token ) (end int,currentNode *Node ,err e
 		currentNode = &Node{start,end,"right bracket-terminal",[]*Node{}}
 		return end ,currentNode ,nil
 	}
-	return -1 ,nil , errors.New("Failed to parse")  
+	return -1 ,nil , errors.New("failed to parse")  
 	
 }

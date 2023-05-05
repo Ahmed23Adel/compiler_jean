@@ -10,5 +10,4 @@ type Node struct{
 type Token struct {
 	Type string 
 	Val string
-
 }

@@ -22,7 +22,7 @@ func codeParser(start int ,tokenArray  []Token ) (end int,currentNode *Node , er
 	}
 	//fmt.Println("All options failed, code parser")
 
-	return -1 , nil,errors.New("Failed to parse")
+	return -1 , nil,errors.New("failed to parse")
 	
 }
 
@@ -40,7 +40,7 @@ func stmtParser(start int ,tokenArray  []Token ) (end int,currentNode *Node , er
 		}
 	}
 	//fmt.Println("All options failed, stmt parser")
-	return -1 , nil,errors.New("Failed to parse")
+	return -1 , nil,errors.New("failed to parse")
 }
 
 
@@ -60,7 +60,7 @@ func exprParser(start int ,tokenArray  []Token ) (end int,currentNode  *Node  , 
 		}
 	}
 	//fmt.Println("All options failed, expr parser")
-	return -1 ,nil ,errors.New("Failed to parse")
+	return -1 ,nil ,errors.New("failed to parse")
 }
 
 func factorParser(start int ,tokenArray  []Token ) (end int,currentNode  *Node   , err error) {
@@ -80,7 +80,7 @@ func factorParser(start int ,tokenArray  []Token ) (end int,currentNode  *Node  
 		}
 	}
 	//fmt.Println("All options failed, factor parser")
-	return -1 , nil,errors.New("Failed to parse")
+	return -1 , nil,errors.New("failed to parse")
 }
 
 func termParser(start int ,tokenArray  []Token ) (end int,currentNode *Node , err error) {  
@@ -99,5 +99,5 @@ func termParser(start int ,tokenArray  []Token ) (end int,currentNode *Node , er
 		}
 	}
 	//println("All options failed, term parser")
-	return -1 , nil,errors.New("Failed to parse")
+	return -1 , nil,errors.New("failed to parse")
 }
