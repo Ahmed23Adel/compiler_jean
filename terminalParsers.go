@@ -85,3 +85,76 @@ func closedParanParser(start int ,tokenArray  []TokenStruct ) (end int,currentNo
 	return -1 ,nil , errors.New("failed to parse")  
 	
 }
+
+func openCurlyBracketParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node, err error) {
+	if start < len(tokenArray) && tokenArray[start].Type == (OPEN_CURLY_BRACKET) {
+		//println("Right bracket parser succeeded")
+		end = start + 1
+		currentNode = &Node{start, end, "left curly-terminal", []*Node{}}
+		return end, currentNode, nil
+	}
+	return -1, nil, errors.New("failed to parse")
+
+}
+
+func closeCurlyBracketParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node, err error) {
+	if start < len(tokenArray) && tokenArray[start].Type == (CLOSE_CURLY_BRACKET) {
+		//println("Right bracket parser succeeded")
+		end = start + 1
+		currentNode = &Node{start, end, "right curly-terminal", []*Node{}}
+		return end, currentNode, nil
+	}
+	return -1, nil, errors.New("failed to parse")
+
+}
+
+func colonParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node, err error) {
+	if start < len(tokenArray) && tokenArray[start].Type == (COLON) {
+		//println("Right bracket parser succeeded")
+		end = start + 1
+		currentNode = &Node{start, end, "colon type-terminal", []*Node{}}
+		return end, currentNode, nil
+	}
+	return -1, nil, errors.New("failed to parse")
+}
+
+func varTypeParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node, err error) {
+	if start < len(tokenArray) && (tokenArray[start].Type == (INT) || tokenArray[start].Type == (FLT) || tokenArray[start].Type == (STR)) {
+		//println("Right bracket parser succeeded")
+		end = start + 1
+		currentNode = &Node{start, end, "vartype intOrStrOrFlt-terminal", []*Node{}}
+		return end, currentNode, nil
+	}
+	return -1, nil, errors.New("failed to parse")
+}
+
+func commaParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node, err error) {
+	if start < len(tokenArray) && tokenArray[start].Type == (COMMA) {
+		//println("Right bracket parser succeeded")
+		end = start + 1
+		currentNode = &Node{start, end, "comma ,", []*Node{}}
+		return end, currentNode, nil
+	}
+	return -1, nil, errors.New("failed to parse")
+}
+
+func questionMarkParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node, err error) {  
+	if start < len(tokenArray) && tokenArray[start].Type ==  (QUESTION_MARK) {
+		//println("Right bracket parser succeeded")
+		end = start + 1
+		currentNode = &Node{start, end, "question mark-terminal", []*Node{}}
+		return end, currentNode, nil
+	}
+	return -1, nil, errors.New("failed to parse")
+}
+
+
+func excMarkParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node, err error) {
+	if start < len(tokenArray) && tokenArray[start].Type ==  (EXCLAMATION_MARK) {
+		//println("Right bracket parser succeeded")
+		end = start + 1
+		currentNode = &Node{start, end, "exclamation mark-terminal", []*Node{}}
+		return end, currentNode, nil
+	}
+	return -1, nil, errors.New("failed to parse")
+}

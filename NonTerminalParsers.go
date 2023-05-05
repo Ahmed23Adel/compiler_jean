@@ -28,8 +28,8 @@ func codeParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Nod
 
 func stmtParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node , err error) {  
 	option1 := []parserFunction{varParser,assignParser,exprParser}    // stmt --> var = expr  sep
-
-	options := [][]parserFunction{option1}
+	option2 := []parserFunction{ifElseParser}  // stmt --> ifElse 
+	options := [][]parserFunction{option1 , option2}
 
 	for _ ,option := range options {
 		end ,currentNode ,err = parseSequential(start,option,tokenArray)
@@ -42,6 +42,8 @@ func stmtParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Nod
 	//fmt.Println("All options failed, stmt parser")
 	return -1 , nil,errors.New("failed to parse")
 }
+
+
 
 
 
@@ -100,4 +102,56 @@ func termParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Nod
 	}
 	//println("All options failed, term parser")
 	return -1 , nil,errors.New("failed to parse")
+}
+
+func ifElseParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node , err error) { 
+	option1 := []parserFunction{openParanParser,exprParser,closedParanParser, questionMarkParser,
+		openCurlyBracketParser, codeParser , closeCurlyBracketParser ,elseParser}  // ifElse --> ( expr )? {code} else  # if 
+	options := [][]parserFunction{option1}
+	for _ ,option := range options {
+		//print("expression parser Trying option ",i,"\n")
+		end ,currentNode ,err = parseSequential(start,option,tokenArray)
+		if err == nil {
+			
+			currentNode.name = "if stmt"
+			return end , currentNode ,nil
+		}
+	}
+	//fmt.Println("All options failed, expr parser")
+	return -1 ,nil ,errors.New("failed to parse")
+}
+
+func elseParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node , err error) {  
+	option1 := []parserFunction{
+		excMarkParser ,
+		openParanParser,
+		exprParser ,
+		closedParanParser ,
+		questionMarkParser ,
+		openCurlyBracketParser ,
+		codeParser ,	
+		closeCurlyBracketParser ,
+		elseParser }
+	// else --> !(expr)? {code} else   # else if 
+
+	option2 := []parserFunction{
+		excMarkParser ,
+		openCurlyBracketParser ,
+		codeParser ,
+		closeCurlyBracketParser} //else --> !{code}               # only else
+	option3 := []parserFunction{} 
+	options := [][]parserFunction{option1,option2,option3}
+
+	for  _ ,option := range options {
+		//print("term parser Trying option ",i,"\n")
+		end , currentNode,err = parseSequential(start,option,tokenArray)
+		if err == nil {					
+			//fmt.Println("term parser succeeded at option ",i)
+			currentNode.name = "else"
+			return end ,currentNode ,nil
+		}
+	}
+	//println("All options failed, term parser")
+	return -1 , nil,errors.New("failed to parse")
+
 }

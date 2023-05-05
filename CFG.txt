@@ -19,7 +19,7 @@ factor --> var
 # conditional statements
 stmt --> ( expr )? {code} else  # if 
 else --> !(expr)? {code} else   # else if 
-else --> !(code)                # only else
+else --> !{code}               # only else
 else --> None                   # No else
 
 
