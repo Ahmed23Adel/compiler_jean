@@ -189,6 +189,10 @@ func lex_analyzer(input string) []TokenStruct {
 				handleBlockComment(&input, &i, &current_pos)
 				continue
 			}
+			if string(input[i])+string(input[i+1]) == "==" {
+				handleComparator(&i, &input, &tokens, &current_pos)
+				continue
+			}
 		}
 		if i < len(input) { // handle one character
 			if string(input[i]) == " " { // space
@@ -257,6 +261,11 @@ func lex_analyzer(input string) []TokenStruct {
 
 	}
 	return tokens
+}
+func handleComparator(i *int, input *string, tokens *[]TokenStruct, current_pos *Position) {
+	(*tokens) = append((*tokens), TokenStruct{Type: (COMP), Val: string((*input)[*i : *i+1]), Pos: *current_pos})
+	current_pos.column += 2
+	*i += 1
 }
 
 func handleIdentifier(i *int, input *string, tokens *[]TokenStruct, current_pos *Position) {

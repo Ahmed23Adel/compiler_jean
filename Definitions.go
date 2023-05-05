@@ -40,6 +40,7 @@ const (
 	FLT                 = "flt"
 	STR                 = "str"
 	COMMA               = "comma"
+	COMP               = "comparator"
 )
 
 
