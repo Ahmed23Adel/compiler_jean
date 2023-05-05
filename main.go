@@ -18,6 +18,7 @@ func main() {
 			arraysWithoutSep = append(arraysWithoutSep, token)
 		}
 	}
+	
 	// print the tokens
 	for _, token := range arraysWithoutSep {
 		fmt.Println(token.Type, token.Val)

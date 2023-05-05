@@ -31,10 +31,10 @@ func varParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node
 
 // addOpParser: checks if the token at the start index is an addition operator, if it is it appends to the tree
 func addOpParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node ,err error) {
-	if start < len(tokenArray) &&( tokenArray[start].Type ==  (ADD) ||  tokenArray[start].Type ==  (SUB)) {  
+	if start < len(tokenArray) &&( tokenArray[start].Type ==  (ADD) ||  tokenArray[start].Type ==  (SUB) || tokenArray[start].Type == COMP)  {  
 		//println("Operator parser succeeded")
 		end = start + 1
-		currentNode = &Node{start,end,"addition operator-terminal",[]*Node{}}
+		currentNode = &Node{start,end,"addition level operator-terminal",[]*Node{}}
 		return end ,currentNode ,nil
 	}  
 	//fmt.Println("failed to parse an operator")
@@ -46,7 +46,7 @@ func multOpParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *N
 	if start < len(tokenArray) && (tokenArray[start].Type ==  (MUL) ||  tokenArray[start].Type ==  DIV  ){
 		//println("Operator parser succeeded")
 		end = start + 1
-		currentNode = &Node{start,end,"multiplication operator-terminal",[]*Node{}}
+		currentNode = &Node{start,end,"multiplication level operator-terminal",[]*Node{}}
 		return end ,currentNode ,nil
 	}
 	//fmt.Println("failed to parse an operator")
