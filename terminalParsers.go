@@ -54,6 +54,8 @@ func multOpParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *N
 
 }
 
+
+// Terminal parser for the assignment operator "="
 func assignParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node ,err error)  {
 	if start < len(tokenArray)  && tokenArray[start].Type ==  (ASSIGN) {
 		//println("Assign parser succeeded")
