@@ -26,3 +26,4 @@ x>3
 x<4
 x>=7
 x<=8
+f(x:int,y:float)

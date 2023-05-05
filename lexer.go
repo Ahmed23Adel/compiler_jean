@@ -175,9 +175,13 @@ func lex_analyzer(input string) []TokenStruct {
 			} else if handleMultiLetterToken(&input, &i, &current_pos, "not", &tokens, NOT) { //
 				continue
 
-			}else if handleMultiLetterToken(&input, &i, &current_pos, "abs", &tokens, ABS) { //
+			} else if handleMultiLetterToken(&input, &i, &current_pos, "abs", &tokens, ABS) { //
 				continue
-			}  else if (string(input[i]) == "'" && string(input[i+2]) == "'") && isChar(string(input[i+1])) {
+			} else if handleMultiLetterToken(&input, &i, &current_pos, "float", &tokens, FLT) { //
+				continue
+			} else if handleMultiLetterToken(&input, &i, &current_pos, "int", &tokens, INT) { //
+				continue
+			} else if (string(input[i]) == "'" && string(input[i+2]) == "'") && isChar(string(input[i+1])) {
 				handleChar(&current_pos, &input, &i, &tokens)
 				continue
 			}
@@ -256,13 +260,13 @@ func lex_analyzer(input string) []TokenStruct {
 
 			} else if handleOneLetterToken(&input, &i, &current_pos, "=", &tokens, ASSIGN) { //
 				continue
-			}else if handleOneLetterToken(&input, &i, &current_pos, "&", &tokens, BITAND) { //
+			} else if handleOneLetterToken(&input, &i, &current_pos, "&", &tokens, BITAND) { //
 				continue
-			}else if handleOneLetterToken(&input, &i, &current_pos, ">", &tokens, GT) { //
+			} else if handleOneLetterToken(&input, &i, &current_pos, ">", &tokens, GT) { //
 				continue
-			}else if handleOneLetterToken(&input, &i, &current_pos, "<", &tokens, LT) { //
+			} else if handleOneLetterToken(&input, &i, &current_pos, "<", &tokens, LT) { //
 				continue
-			}		
+			}
 		}
 
 		if isInt(string(input[i])) {

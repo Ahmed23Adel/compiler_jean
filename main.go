@@ -7,7 +7,6 @@ import (
 
 func main() {
 
-
 	fileName := os.Args[1]
 	tokensArray := Lexer(fileName)
 	//fmt.Println(tokensArray)
@@ -18,7 +17,7 @@ func main() {
 			arraysWithoutSep = append(arraysWithoutSep, token)
 		}
 	}
-	
+
 	// print the tokens
 	fmt.Println("Tokens:")
 	for _, token := range arraysWithoutSep {
