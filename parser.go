@@ -3,6 +3,7 @@ package main
 import(
 	"errors"
 	"fmt"
+	"strings"
 )
 
 type Node struct{
@@ -12,6 +13,32 @@ type Node struct{
 	adjacent []*Node
 }
 
+func PrintGraph(root *Node , tokenArray  []Token) {
+	visited := make(map[*Node]bool)
+	fmt.Println("Printing tree")
+	printNode(root, visited, 0 ,tokenArray)
+}
+
+func printNode(node *Node, visited map[*Node]bool, depth int , tokenArray  []Token) {
+	if visited[node] {
+		return
+	}
+	visited[node] = true
+
+	
+
+	if len(node.adjacent) == 0 && node.start < len(tokenArray){
+		fmt.Printf("%s ,Contents :  %s \n", node.name , tokenArray[node.start].Val) 
+	}else {
+		fmt.Printf("%s \n", node.name ) 
+	}
+	
+	for _, adj := range node.adjacent {
+		fmt.Printf("%s%s\n", strings.Repeat(" ", depth*2), "|")
+		fmt.Printf("%s%s", strings.Repeat(" ", depth*2), "+-")
+		printNode(adj, visited, depth+1 , tokenArray)
+	}
+}
 
 func printTree(node *Node , tokenArray  []Token) {
     // Print the current node
@@ -74,6 +101,7 @@ func parseDocument(tokenArray []Token)  {
 	}else {
 		println("parser succeeded")
 		printTree(CFG , tokenArray)
+		PrintGraph(CFG, tokenArray)
 	}
 
 	
