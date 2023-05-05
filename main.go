@@ -10,7 +10,7 @@ func main() {
 
 	fileName := os.Args[1]
 	tokensArray := Lexer(fileName)
-
+	//fmt.Println(tokensArray)
 	arraysWithoutSep := []TokenStruct{}
 
 	for _, token := range tokensArray {
