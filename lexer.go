@@ -295,6 +295,8 @@ func lex_analyzer(input string) []TokenStruct {
 				continue
 			} else if handleOneLetterToken(&input, &i, &current_pos, "<", &tokens, LT) { //
 				continue
+			} else if handleOneLetterToken(&input, &i, &current_pos, ",", &tokens, COMMA) { //
+				continue
 			}
 		}
 
