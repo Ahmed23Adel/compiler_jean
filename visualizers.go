@@ -18,14 +18,18 @@ func printNode(node *Node, visited map[*Node]bool, depth int , tokenArray  []Tok
 	visited[node] = true
 
 	if len(node.adjacent) == 0 && node.start < len(tokenArray){
-		fmt.Printf("%s ,Contents :  %s \n", node.name , tokenArray[node.start].Val) 
+		if node.start == -1 {
+			fmt.Printf("%s ,Contents :  %s \n", node.name , "None") 
+		} else {
+			fmt.Printf("%s ,Contents :  %s \n", node.name , tokenArray[node.start].Val)
+		}
 	}else {
 		fmt.Printf("%s \n", node.name ) 
 	}
 	
 	for _, adj := range node.adjacent {
-		fmt.Printf("%s%s\n", strings.Repeat(" ", depth*2), "|")
-		fmt.Printf("%s%s", strings.Repeat(" ", depth*2), "+-")
+		fmt.Printf("%s%s\n", strings.Repeat(" ", depth*2), "│")  // old "|"
+		fmt.Printf("%s%s", strings.Repeat(" ", depth*2), "├─")  // old "+-"
 		printNode(adj, visited, depth+1 , tokenArray)
 	}
 }
