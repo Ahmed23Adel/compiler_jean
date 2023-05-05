@@ -37,12 +37,12 @@ const (
 	EOF = iota
 	ILLEGAL
 	// VARS
-	IDENT
+	VAR
 	EQUAL
 	NUMBER
 	FLOAT
 	CHAR
-	// Mathmatical expressions
+	// Mathematical expressions
 	ADD   // +
 	SUB   // -
 	MUL   // *
@@ -64,7 +64,7 @@ const (
 	//Block structure // DONE
 	// Functions
 	COLON // :
-	SEPERATOR
+	SEPARATOR
 )
 
 var tokens = []string{
@@ -72,7 +72,7 @@ var tokens = []string{
 	EOF:     "EOF",
 	ILLEGAL: "ILLEGAL",
 	// VARS
-	IDENT:  "IDENT",
+	VAR:  "IDENT",
 	EQUAL:  "EQUAL",
 	NUMBER: "VAL_NUMBER",
 	FLOAT:  "VAL_FLOAT",
@@ -100,11 +100,11 @@ var tokens = []string{
 	//Block structure // DONE
 	// Functions
 	COLON:     "COLON", // :
-	SEPERATOR: "SEPERATOR",
+	SEPARATOR: "SEPERATOR",
 }
 
-type tokenStruct struct {
-	token_type  string //, //idenb
+type TokenStruct struct {
+	token_type  string //, 
 	token_value string //x
 	token_pos   Position
 }
@@ -174,16 +174,16 @@ func posGoNextLine(pos *Position) {
 	(*pos).column = 0
 }
 
-func appendSeperator(tokens *[]string) {
-	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1] != getToken(SEPERATOR) {
-		*tokens = append((*tokens), getToken(SEPERATOR))
+func appendSeparator(tokens *[]string) {
+	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1] != getToken(SEPARATOR) {
+		*tokens = append((*tokens), getToken(SEPARATOR))
 	}
 }
 
 func handleOneLineComment(input *string, idx *int, current_pos *Position) {
 	// posGoNextLine(current_pos)
 	*idx = findFirstRune((*input), (*idx), '\n') - 1
-	appendSeperator(&tokens)
+	appendSeparator(&tokens)
 }
 
 func handleBlockComment(input *string, idx *int, current_pos *Position) {
@@ -192,8 +192,8 @@ func handleBlockComment(input *string, idx *int, current_pos *Position) {
 	(*current_pos).line += numNewLines
 	(*current_pos).column += distFromLastNewLine
 
-	if len(tokens) > 0 && tokens[len(tokens)-1] != getToken(SEPERATOR) {
-		tokens = append(tokens, getToken(SEPERATOR))
+	if len(tokens) > 0 && tokens[len(tokens)-1] != getToken(SEPARATOR) {
+		tokens = append(tokens, getToken(SEPARATOR))
 	}
 }
 
@@ -201,28 +201,28 @@ func forwardPosOneSpace(current_pos *Position) {
 	(*current_pos).column += 1
 }
 
-func handleNewLine(current_pos *Position, tokens *[]tokenStruct) {
-	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1].token_type != getToken(SEPERATOR) {
-		*tokens = append((*tokens), tokenStruct{token_type: getToken(SEPERATOR), token_value: "\n", token_pos: *current_pos})
+func handleNewLine(current_pos *Position, tokens *[]TokenStruct) {
+	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1].token_type != getToken(SEPARATOR) {
+		*tokens = append((*tokens), TokenStruct{token_type: getToken(SEPARATOR), token_value: "\n", token_pos: *current_pos})
 	}
 
 	current_pos.line += 1
 	current_pos.column = 0
 }
 
-func handleOneLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]tokenStruct, token Token) bool {
+func handleOneLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]TokenStruct, token Token) bool {
 	if string((*input)[(*idx)]) == searchable {
-		(*tokens) = append((*tokens), tokenStruct{token_type: getToken(token), token_value: searchable, token_pos: *current_pos})
+		(*tokens) = append((*tokens), TokenStruct{token_type: getToken(token), token_value: searchable, token_pos: *current_pos})
 		(*current_pos).column += 1
 		return true
 	}
 	return false
 }
 
-func handleMultiLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]tokenStruct, token Token) bool {
+func handleMultiLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]TokenStruct, token Token) bool {
 	if *idx+len(searchable) < len(*input)-1 {
 		if string((*input)[(*idx):(*idx)+len(searchable)]) == searchable {
-			(*tokens) = append((*tokens), tokenStruct{token_type: getToken(token), token_value: searchable, token_pos: *current_pos})
+			(*tokens) = append((*tokens), TokenStruct{token_type: getToken(token), token_value: searchable, token_pos: *current_pos})
 			(*current_pos).column += len(searchable)
 			*idx += len(searchable) - 1
 			return true
@@ -232,8 +232,8 @@ func handleMultiLetterToken(input *string, idx *int, current_pos *Position, sear
 	return false
 }
 
-func lex_analyzer(input string) []tokenStruct {
-	tokens := make([]tokenStruct, 0)
+func lex_analyzer(input string) []TokenStruct {
+	tokens := make([]TokenStruct, 0)
 	current_pos := Position{line: 0, column: 0}
 	for i := 0; i < len(input); i++ {
 		// if i > 50 {
@@ -334,7 +334,7 @@ func lex_analyzer(input string) []tokenStruct {
 	return tokens
 }
 
-func handleIdentifier(i *int, input *string, tokens *[]tokenStruct, current_pos *Position) {
+func handleIdentifier(i *int, input *string, tokens *[]TokenStruct, current_pos *Position) {
 	counter1 := *i
 	counter2 := 0
 	if counter1+counter2 < len((*input)) && isCharaToZ(string((*input)[*i])) {
@@ -344,33 +344,33 @@ func handleIdentifier(i *int, input *string, tokens *[]tokenStruct, current_pos 
 
 		}
 		*i += counter2 - 1
-		(*tokens) = append((*tokens), tokenStruct{token_type: getToken(IDENT), token_value: string((*input)[counter1 : counter1+counter2]), token_pos: *current_pos})
+		(*tokens) = append((*tokens), TokenStruct{token_type: getToken(VAR), token_value: string((*input)[counter1 : counter1+counter2]), token_pos: *current_pos})
 		current_pos.column += counter2
 	}
 }
 
-func handleRealNumbers(i *int, tokens *[]tokenStruct, input *string, current_pos *Position) {
+func handleRealNumbers(i *int, tokens *[]TokenStruct, input *string, current_pos *Position) {
 	var counter1, counter2 int
 	counter1, counter2 = (*i), handleNumber(input, i, tokens)
 	*i += counter2 - 1
 	if isInt(string((*input)[counter1 : counter1+counter2])) {
-		(*tokens) = append((*tokens), tokenStruct{token_type: getToken(NUMBER), token_value: string((*input)[counter1 : counter1+counter2]), token_pos: *current_pos})
+		(*tokens) = append((*tokens), TokenStruct{token_type: getToken(NUMBER), token_value: string((*input)[counter1 : counter1+counter2]), token_pos: *current_pos})
 		current_pos.column += counter2
 	}
 	if isFloat(string((*input)[counter1 : counter1+counter2])) {
-		(*tokens) = append((*tokens), tokenStruct{token_type: getToken(FLOAT), token_value: string((*input)[counter1 : counter1+counter2]), token_pos: *current_pos})
+		(*tokens) = append((*tokens), TokenStruct{token_type: getToken(FLOAT), token_value: string((*input)[counter1 : counter1+counter2]), token_pos: *current_pos})
 		current_pos.column += counter2
 	}
 }
 
-func handleChar(current_pos *Position, input *string, idx *int, tokens *[]tokenStruct) {
+func handleChar(current_pos *Position, input *string, idx *int, tokens *[]TokenStruct) {
 	current_pos.column += 1
-	(*tokens) = append((*tokens), tokenStruct{token_type: getToken(CHAR), token_value: string((*input)[(*idx)+1]), token_pos: (*current_pos)})
+	(*tokens) = append((*tokens), TokenStruct{token_type: getToken(CHAR), token_value: string((*input)[(*idx)+1]), token_pos: (*current_pos)})
 	(*idx) += 3
 	(*current_pos).column += 2
 }
 
-func handleNumber(input *string, i *int, tokens *[]tokenStruct) int {
+func handleNumber(input *string, i *int, tokens *[]TokenStruct) int {
 	counter1 := *i
 	counter2 := 0
 	if counter1+counter2 < len((*input)) {
