@@ -260,7 +260,7 @@ func lex_analyzer(input string) []TokenStruct {
 
 			} else if handleOneLetterToken(&input, &i, &current_pos, "=", &tokens, ASSIGN) { //
 				continue
-			} else if handleOneLetterToken(&input, &i, &current_pos, "&", &tokens, BITAND) { //
+			} else if handleOneLetterToken(&input, &i, &current_pos, "&", &tokens, BIT_AND) { //
 				continue
 			} else if handleOneLetterToken(&input, &i, &current_pos, ">", &tokens, GT) { //
 				continue
