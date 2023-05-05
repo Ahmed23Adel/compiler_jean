@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	//"os"
+	"os"
 )
 
 
@@ -23,13 +23,21 @@ func main()  {
 	{Type : MUL , Val : "*" }, {Type : NUMBER , Val : "4" }, {Type : CLOSE_PARAN , Val : ")" } , {Type: VAR , Val : "y"} , {Type : ASSIGN , Val : "=" }, {Type : NUMBER , Val : "4" }, {Type : ADD , Val : "+" }, {Type : NUMBER , Val : "2" }, {Type : MUL , Val : "*" }, {Type : VAR , Val : "x"} }
 	
 
-	// fileName := os.Args[1]
-	// tokensArray := Lexer(fileName) 
+	fileName := os.Args[1]
+	tokensArray = Lexer(fileName) 
+
+	arraysWithoutSep := []TokenStruct{}
+
+	for _ ,  token := range tokensArray {
+		if token.Type != SEPARATOR {
+			arraysWithoutSep = append(arraysWithoutSep , token)
+		}
+	}
 	// print the tokens
-	for _,token := range tokensArray {
+	for _,token := range arraysWithoutSep {
 			fmt.Println(token.Type , token.Val)
 	}
-	parseDocument(tokensArray)
+	parseDocument(arraysWithoutSep)
 
 	// sample_str := readSample("sample.jean")
 	// sample_str = sample_str + "\n"
