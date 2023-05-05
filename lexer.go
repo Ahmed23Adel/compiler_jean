@@ -6,10 +6,9 @@ import (
 	"regexp"
 )
 
-
-func Lexer(filename string)  []TokenStruct { 
+func Lexer(filename string) []TokenStruct {
 	// Read the file
-	fileContent := readSample(filename) +"\n"
+	fileContent := readSample(filename) + "\n"
 	tokenArray := lex_analyzer(fileContent)
 	return tokenArray
 }
@@ -41,9 +40,6 @@ func removeComments(input string) string {
 	return input
 }
 
-
-
-
 func isFloat(input string) bool {
 	floatRegex := regexp.MustCompile(`^[0-9]*\.[0-9]+$`) // 0.2 .2
 
@@ -55,7 +51,7 @@ func isFloat(input string) bool {
 }
 
 func isInt(input string) bool {
-	intRegex := regexp.MustCompile(`^[1-9]\d*$`) // 0.2 .2
+	intRegex := regexp.MustCompile(`^[0-9]\d*$`) // 0.2 .2
 
 	if intRegex.MatchString(input) {
 		return true
@@ -131,8 +127,8 @@ func forwardPosOneSpace(current_pos *Position) {
 }
 
 func handleNewLine(current_pos *Position, tokens *[]TokenStruct) {
-	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1]. Type !=   (SEPARATOR) {
-		*tokens = append((*tokens), TokenStruct{ Type:   (SEPARATOR), Val: "\n", Pos: *current_pos})
+	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1].Type != (SEPARATOR) {
+		*tokens = append((*tokens), TokenStruct{Type: (SEPARATOR), Val: "\n", Pos: *current_pos})
 	}
 
 	current_pos.line += 1
@@ -141,7 +137,7 @@ func handleNewLine(current_pos *Position, tokens *[]TokenStruct) {
 
 func handleOneLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]TokenStruct, token Token) bool {
 	if string((*input)[(*idx)]) == searchable {
-		(*tokens) = append((*tokens), TokenStruct{ Type:   (token), Val: searchable, Pos: *current_pos})
+		(*tokens) = append((*tokens), TokenStruct{Type: (token), Val: searchable, Pos: *current_pos})
 		(*current_pos).column += 1
 		return true
 	}
@@ -151,7 +147,7 @@ func handleOneLetterToken(input *string, idx *int, current_pos *Position, search
 func handleMultiLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]TokenStruct, token Token) bool {
 	if *idx+len(searchable) < len(*input)-1 {
 		if string((*input)[(*idx):(*idx)+len(searchable)]) == searchable {
-			(*tokens) = append((*tokens), TokenStruct{ Type:   (token), Val: searchable, Pos: *current_pos})
+			(*tokens) = append((*tokens), TokenStruct{Type: (token), Val: searchable, Pos: *current_pos})
 			(*current_pos).column += len(searchable)
 			*idx += len(searchable) - 1
 			return true
@@ -273,7 +269,7 @@ func handleIdentifier(i *int, input *string, tokens *[]TokenStruct, current_pos 
 
 		}
 		*i += counter2 - 1
-		(*tokens) = append((*tokens), TokenStruct{ Type:   (VAR), Val: string((*input)[counter1 : counter1+counter2]), Pos: *current_pos})
+		(*tokens) = append((*tokens), TokenStruct{Type: (VAR), Val: string((*input)[counter1 : counter1+counter2]), Pos: *current_pos})
 		current_pos.column += counter2
 	}
 }
@@ -283,18 +279,18 @@ func handleRealNumbers(i *int, tokens *[]TokenStruct, input *string, current_pos
 	counter1, counter2 = (*i), handleNumber(input, i, tokens)
 	*i += counter2 - 1
 	if isInt(string((*input)[counter1 : counter1+counter2])) {
-		(*tokens) = append((*tokens), TokenStruct{ Type:   (NUMBER), Val: string((*input)[counter1 : counter1+counter2]), Pos: *current_pos})
+		(*tokens) = append((*tokens), TokenStruct{Type: (NUMBER), Val: string((*input)[counter1 : counter1+counter2]), Pos: *current_pos})
 		current_pos.column += counter2
 	}
 	if isFloat(string((*input)[counter1 : counter1+counter2])) {
-		(*tokens) = append((*tokens), TokenStruct{ Type:   (FLOAT), Val: string((*input)[counter1 : counter1+counter2]), Pos: *current_pos})
+		(*tokens) = append((*tokens), TokenStruct{Type: (FLOAT), Val: string((*input)[counter1 : counter1+counter2]), Pos: *current_pos})
 		current_pos.column += counter2
 	}
 }
 
 func handleChar(current_pos *Position, input *string, idx *int, tokens *[]TokenStruct) {
 	current_pos.column += 1
-	(*tokens) = append((*tokens), TokenStruct{ Type:   (CHAR), Val: string((*input)[(*idx)+1]), Pos: (*current_pos)})
+	(*tokens) = append((*tokens), TokenStruct{Type: (CHAR), Val: string((*input)[(*idx)+1]), Pos: (*current_pos)})
 	(*idx) += 3
 	(*current_pos).column += 2
 }
@@ -342,4 +338,3 @@ func findFirstStr(input string, startIndex int, searchable string) (int, int, in
 	}
 	return -1, -1, -1
 }
-
