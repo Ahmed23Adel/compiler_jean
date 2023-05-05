@@ -178,15 +178,23 @@ func lex_analyzer(input string) []TokenStruct {
 			tokens[len(tokens)-1].Val = "-" + tokens[len(tokens)-1].Val
 			continue
 		}
+		if i+5 < len(input) { // handle 5 characters
+			if handleMultiLetterToken(&input, &i, &current_pos, "return", &tokens, RETURN) { //
+				continue
+			}
+		}
 		if i+4 < len(input) { // handle 5 characters
 			if handleMultiLetterToken(&input, &i, &current_pos, "float", &tokens, FLT) { //
 				continue
+			} else if handleMultiLetterToken(&input, &i, &current_pos, "break", &tokens, BREAK) { //
+				continue
+
 			}
 		}
 		if i+3 < len(input) { // handle 4 characters
 			if handleMultiLetterToken(&input, &i, &current_pos, "char", &tokens, CHR) { //
 				continue
-			} 
+			}
 		}
 		if i+2 < len(input) { // handle 3 characters
 			if handleMultiLetterToken(&input, &i, &current_pos, "and", &tokens, AND) { //

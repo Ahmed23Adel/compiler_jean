@@ -45,6 +45,8 @@ const (
 	LT                  = "Less than(<)"
 	GTE                 = "Greater than or Equal(>=)"
 	LTE                 = "Less than or Equal(<=)"
+	RETURN              = "Return"
+	BREAK               = "Break"
 )
 
 type TokenStruct struct {
