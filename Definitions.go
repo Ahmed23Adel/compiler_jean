@@ -33,17 +33,17 @@ const (
 	EXCLAMATION_MARK    = "exclamation mark (!)"
 	COLON               = "colon (:)"
 	SEPARATOR           = "separator"
-	INT                 = "int"
-	FLT                 = "flt"
+	INT                 = "int(dtype)"
+	FLT                 = "float(dtype)"
 	STR                 = "str"
 	COMMA               = "comma (,)"
 	COMP                = "comparator(==)"
 	BIT_AND             = "Bitwise And"
 	BIT_OR              = "Bitwise Or(|)"
-	GT                  = "Greater than(>)"
-	LT                  = "Less than(<)"
-	GTE                 = "Greater than or Equal(>=)"
-	LTE                 = "Less than or Equal(<=)"
+	GT                     = "Greater than(>)"
+	LT                     = "Less than(<)"
+	GTE                   = "Greater than or Equal(>=)"
+	LTE                   = "Less than or Equal(<=)"
 )
 
 type TokenStruct struct {
