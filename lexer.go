@@ -230,7 +230,7 @@ func lex_analyzer(input string) []TokenStruct {
 			} else if handleOneLetterToken(&input, &i, &current_pos, "%", &tokens, MOD) { //
 				continue
 
-			} else if handleOneLetterToken(&input, &i, &current_pos, "|", &tokens, BITOR) { //
+			} else if handleOneLetterToken(&input, &i, &current_pos, "|", &tokens, BIT_OR) { //
 				continue
 
 			} else if handleOneLetterToken(&input, &i, &current_pos, "(", &tokens, OPEN_PARAN) { //
@@ -256,7 +256,7 @@ func lex_analyzer(input string) []TokenStruct {
 
 			} else if handleOneLetterToken(&input, &i, &current_pos, "=", &tokens, ASSIGN) { //
 				continue
-			}else if handleOneLetterToken(&input, &i, &current_pos, "&", &tokens, BITAND) { //
+			}else if handleOneLetterToken(&input, &i, &current_pos, "&", &tokens, BIT_AND) { //
 				continue
 			}else if handleOneLetterToken(&input, &i, &current_pos, ">", &tokens, GT) { //
 				continue

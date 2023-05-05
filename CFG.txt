@@ -15,6 +15,10 @@ factor --> ( expr )
 factor --> num
 factor --> var
 
+# not tested - for neg nums 
+factor --> -( expr )
+factor --> -num
+factor --> -var
 
 # conditional statements
 stmt --> ( expr )? {code} else  # if 
