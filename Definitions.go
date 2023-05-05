@@ -35,6 +35,7 @@ const (
 	SEPARATOR           = "separator"
 	INT                 = "int(dtype)"
 	FLT                 = "float(dtype)"
+	CHR                 = "char(dtype)"
 	STR                 = "str"
 	COMMA               = "comma (,)"
 	COMP                = "comparator(==)"

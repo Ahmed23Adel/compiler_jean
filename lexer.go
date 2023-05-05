@@ -181,6 +181,8 @@ func lex_analyzer(input string) []TokenStruct {
 				continue
 			} else if handleMultiLetterToken(&input, &i, &current_pos, "int", &tokens, INT) { //
 				continue
+			} else if handleMultiLetterToken(&input, &i, &current_pos, "char", &tokens, CHR) { //
+				continue
 			} else if (string(input[i]) == "'" && string(input[i+2]) == "'") && isChar(string(input[i+1])) {
 				handleChar(&current_pos, &input, &i, &tokens)
 				continue
