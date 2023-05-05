@@ -6,6 +6,14 @@ import (
 	"regexp"
 )
 
+
+func Lexer(filename string)  []TokenStruct { 
+	// Read the file
+	fileContent := readSample(filename) +"\n"
+	tokenArray := lex_analyzer(fileContent)
+	return tokenArray
+}
+
 func readSample(filename string) string {
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -33,87 +41,8 @@ func removeComments(input string) string {
 	return input
 }
 
-const (
-	EOF = iota
-	ILLEGAL
-	// VARS
-	VAR
-	EQUAL
-	NUMBER
-	FLOAT
-	CHAR
-	// Mathematical expressions
-	ADD   // +
-	SUB   // -
-	MUL   // *
-	DIV   // /
-	POWER // ^
-	MOD   // %
-	ABS   // |
-	//logical operators
-	AND // and //TODO
-	OR  // or //TODO
-	NOT // not //TODO
-	// if then
-	OPEN_PARAN          // (
-	CLOSE_PARAN         // )
-	QUESTION_MARK       // ?
-	OPEN_CURLY_BRACKET  // {
-	CLOSE_CURLY_BRACKET // }
-	EXCLAMATION_MARK    // !
-	//Block structure // DONE
-	// Functions
-	COLON // :
-	SEPARATOR
-)
 
-var tokens = []string{
-	// "type(MATHOP, LOGICALOP, VAR, EQUAL, CONST, IFREL--if related--, VARTYPE )"_ EXTRA INFORMATOIN
-	EOF:     "EOF",
-	ILLEGAL: "ILLEGAL",
-	// VARS
-	VAR:  "IDENT",
-	EQUAL:  "EQUAL",
-	NUMBER: "VAL_NUMBER",
-	FLOAT:  "VAL_FLOAT",
-	CHAR:   "VAL_CHAR",
-	// Mathmatical expressions
-	ADD:   "MATHOP_ADD",   // +
-	SUB:   "MATHOP_SUB",   // -
-	MUL:   "MATHOP_MUL",   // *
-	DIV:   "MATHOP_DIV",   // /
-	POWER: "MATHOP_POWER", // ^
-	MOD:   "MATHOP_MODE",  // %
-	ABS:   "MATHOP_ABS",   // |
-	//PARANTECIES it works for both mathmatical expressions and if
-	OPEN_PARAN:  "PARAN_OPEN",  // (
-	CLOSE_PARAN: "PARAN_CLOSE", // )
-	//logical operators
-	AND: "LOGICALOP_AND", // and
-	OR:  "LOGICALOP_OR",  // or
-	NOT: "LOGICALOP_NOT", // not
-	// if then
-	QUESTION_MARK:       "IFREL_QUESTION_MARK",       // ?
-	OPEN_CURLY_BRACKET:  "SCOPE_OPEN_CURLY_BRACKET",  // {
-	CLOSE_CURLY_BRACKET: "SCOPE_CLOSE_CURLY_BRACKET", // }
-	EXCLAMATION_MARK:    "IFREL_EXCLAMATION_MARK",    // !
-	//Block structure // DONE
-	// Functions
-	COLON:     "COLON", // :
-	SEPARATOR: "SEPERATOR",
-}
 
-type TokenStruct struct {
-	token_type  string //, 
-	token_value string //x
-	token_pos   Position
-}
-
-type Token int
-
-func getToken(t Token) string {
-	return tokens[t]
-}
 
 func isFloat(input string) bool {
 	floatRegex := regexp.MustCompile(`^[0-9]*\.[0-9]+$`) // 0.2 .2
@@ -174,16 +103,16 @@ func posGoNextLine(pos *Position) {
 	(*pos).column = 0
 }
 
-func appendSeparator(tokens *[]string) {
-	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1] != getToken(SEPARATOR) {
-		*tokens = append((*tokens), getToken(SEPARATOR))
-	}
-}
+// func appendSeparator(tokens *[]string) {
+// 	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1] !=   (SEPARATOR) {
+// 		*tokens = append((*tokens),   (SEPARATOR))
+// 	}
+// }
 
 func handleOneLineComment(input *string, idx *int, current_pos *Position) {
 	// posGoNextLine(current_pos)
 	*idx = findFirstRune((*input), (*idx), '\n') - 1
-	appendSeparator(&tokens)
+	//appendSeparator(&tokens)
 }
 
 func handleBlockComment(input *string, idx *int, current_pos *Position) {
@@ -192,9 +121,9 @@ func handleBlockComment(input *string, idx *int, current_pos *Position) {
 	(*current_pos).line += numNewLines
 	(*current_pos).column += distFromLastNewLine
 
-	if len(tokens) > 0 && tokens[len(tokens)-1] != getToken(SEPARATOR) {
-		tokens = append(tokens, getToken(SEPARATOR))
-	}
+	// if len(tokens) > 0 && tokens[len(tokens)-1] !=   (SEPARATOR) {
+	// 	tokens = append(tokens,   (SEPARATOR))
+	// }
 }
 
 func forwardPosOneSpace(current_pos *Position) {
@@ -202,8 +131,8 @@ func forwardPosOneSpace(current_pos *Position) {
 }
 
 func handleNewLine(current_pos *Position, tokens *[]TokenStruct) {
-	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1].token_type != getToken(SEPARATOR) {
-		*tokens = append((*tokens), TokenStruct{token_type: getToken(SEPARATOR), token_value: "\n", token_pos: *current_pos})
+	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1]. Type !=   (SEPARATOR) {
+		*tokens = append((*tokens), TokenStruct{ Type:   (SEPARATOR), Val: "\n", Pos: *current_pos})
 	}
 
 	current_pos.line += 1
@@ -212,7 +141,7 @@ func handleNewLine(current_pos *Position, tokens *[]TokenStruct) {
 
 func handleOneLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]TokenStruct, token Token) bool {
 	if string((*input)[(*idx)]) == searchable {
-		(*tokens) = append((*tokens), TokenStruct{token_type: getToken(token), token_value: searchable, token_pos: *current_pos})
+		(*tokens) = append((*tokens), TokenStruct{ Type:   (token), Val: searchable, Pos: *current_pos})
 		(*current_pos).column += 1
 		return true
 	}
@@ -222,7 +151,7 @@ func handleOneLetterToken(input *string, idx *int, current_pos *Position, search
 func handleMultiLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]TokenStruct, token Token) bool {
 	if *idx+len(searchable) < len(*input)-1 {
 		if string((*input)[(*idx):(*idx)+len(searchable)]) == searchable {
-			(*tokens) = append((*tokens), TokenStruct{token_type: getToken(token), token_value: searchable, token_pos: *current_pos})
+			(*tokens) = append((*tokens), TokenStruct{ Type:   (token), Val: searchable, Pos: *current_pos})
 			(*current_pos).column += len(searchable)
 			*idx += len(searchable) - 1
 			return true
@@ -315,7 +244,7 @@ func lex_analyzer(input string) []TokenStruct {
 			} else if handleOneLetterToken(&input, &i, &current_pos, ":", &tokens, COLON) { //
 				continue
 
-			} else if handleOneLetterToken(&input, &i, &current_pos, "=", &tokens, EQUAL) { //
+			} else if handleOneLetterToken(&input, &i, &current_pos, "=", &tokens, ASSIGN) { //
 				continue
 
 			}
@@ -344,7 +273,7 @@ func handleIdentifier(i *int, input *string, tokens *[]TokenStruct, current_pos 
 
 		}
 		*i += counter2 - 1
-		(*tokens) = append((*tokens), TokenStruct{token_type: getToken(VAR), token_value: string((*input)[counter1 : counter1+counter2]), token_pos: *current_pos})
+		(*tokens) = append((*tokens), TokenStruct{ Type:   (VAR), Val: string((*input)[counter1 : counter1+counter2]), Pos: *current_pos})
 		current_pos.column += counter2
 	}
 }
@@ -354,18 +283,18 @@ func handleRealNumbers(i *int, tokens *[]TokenStruct, input *string, current_pos
 	counter1, counter2 = (*i), handleNumber(input, i, tokens)
 	*i += counter2 - 1
 	if isInt(string((*input)[counter1 : counter1+counter2])) {
-		(*tokens) = append((*tokens), TokenStruct{token_type: getToken(NUMBER), token_value: string((*input)[counter1 : counter1+counter2]), token_pos: *current_pos})
+		(*tokens) = append((*tokens), TokenStruct{ Type:   (NUMBER), Val: string((*input)[counter1 : counter1+counter2]), Pos: *current_pos})
 		current_pos.column += counter2
 	}
 	if isFloat(string((*input)[counter1 : counter1+counter2])) {
-		(*tokens) = append((*tokens), TokenStruct{token_type: getToken(FLOAT), token_value: string((*input)[counter1 : counter1+counter2]), token_pos: *current_pos})
+		(*tokens) = append((*tokens), TokenStruct{ Type:   (FLOAT), Val: string((*input)[counter1 : counter1+counter2]), Pos: *current_pos})
 		current_pos.column += counter2
 	}
 }
 
 func handleChar(current_pos *Position, input *string, idx *int, tokens *[]TokenStruct) {
 	current_pos.column += 1
-	(*tokens) = append((*tokens), TokenStruct{token_type: getToken(CHAR), token_value: string((*input)[(*idx)+1]), token_pos: (*current_pos)})
+	(*tokens) = append((*tokens), TokenStruct{ Type:   (CHAR), Val: string((*input)[(*idx)+1]), Pos: (*current_pos)})
 	(*idx) += 3
 	(*current_pos).column += 2
 }
@@ -414,9 +343,3 @@ func findFirstStr(input string, startIndex int, searchable string) (int, int, in
 	return -1, -1, -1
 }
 
-func main() {
-	sample_str := readSample("sample.jean")
-	sample_str = sample_str + "\n"
-	tokens := lex_analyzer(sample_str)
-	fmt.Println(tokens)
-}

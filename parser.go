@@ -5,9 +5,9 @@ import (
 	"fmt"
 )
 
-type parserFunction func(start int ,tokenArray  []tokenStruct ) (end int,node *Node ,err error)
+type parserFunction func(start int ,tokenArray  []TokenStruct ) (end int,node *Node ,err error)
 
-func parseSequential(start int ,parsers []parserFunction ,tokenArray  []tokenStruct ) (end int,currentNode *Node ,err error) {
+func parseSequential(start int ,parsers []parserFunction ,tokenArray  []TokenStruct ) (end int,currentNode *Node ,err error) {
 	startPoint := start
 
 
@@ -25,7 +25,7 @@ func parseSequential(start int ,parsers []parserFunction ,tokenArray  []tokenStr
 }
 
 
-func parseDocument(tokenArray []tokenStruct)  {  
+func parseDocument(tokenArray []TokenStruct)  {  
 	end ,CFG ,err := codeParser(0,tokenArray)
 	if err != nil   {
 		fmt.Println("Failed to parse")

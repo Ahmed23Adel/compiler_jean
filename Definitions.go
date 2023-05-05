@@ -1,23 +1,51 @@
 package main
 
-type Node struct{
-	start int
-	end int
-	name  string
+type Node struct {
+	start    int
+	end      int
+	name     string
 	adjacent []*Node
 }
 
-const  (
-	VAR  = "var"
-	ADD_OP  = "addition operator"
-	MULT_OP  = "multiplication operator"
-	NUM  = "number"
-	ASSIGN  = "="
-	LEFT_BRACKET  = "("
-	RIGHT_BRACKET  = ")"
+
+
+
+const (
+	EOF               = "end of file"
+	ILLEGAL           = "illegal"
+	VAR               = "var"
+	ASSIGN            = "assign"
+	NUMBER            = "number"
+	FLOAT             = "float"
+	CHAR              = "char"
+	ADD               = "add"
+	SUB               = "sub"
+	MUL               = "mul"
+	DIV               = "div"
+	POWER             = "power"
+	MOD               = "mod"
+	ABS               = "abs"
+	AND               = "and"
+	OR                = "or"
+	NOT               = "not"
+	OPEN_PARAN        = "open paran"
+	CLOSE_PARAN       = "close paran"
+	QUESTION_MARK     = "question mark"
+	OPEN_CURLY_BRACKET = "open curly bracket"
+	CLOSE_CURLY_BRACKET= "close curly bracket"
+	EXCLAMATION_MARK  = "exclamation mark"
+	COLON             = "colon"
+	SEPARATOR         = "separator"
 )
 
-type tokenStruct struct {
-	Type string 
-	Val string
+
+
+
+type TokenStruct struct {
+	Type Token //,
+	Val  string //x
+	Pos  Position
 }
+
+
+type Token string

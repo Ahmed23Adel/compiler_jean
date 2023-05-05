@@ -5,8 +5,8 @@ import (
 )
 
 // numParser: checks if the token at the start index is a number, if it is it appends to the tree
-func numParser(start int ,tokenArray  []tokenStruct ) (end int, currentNode *Node , err error) {  
-	if start < len(tokenArray) && tokenArray[start].Type == NUM {
+func numParser(start int ,tokenArray  []TokenStruct ) (end int, currentNode *Node , err error) {  
+	if start < len(tokenArray) && tokenArray[start].Type ==  (NUMBER)  || tokenArray[start].Type ==  (FLOAT)   {
 		//println("Number parser succeeded")
 		end = start + 1
 		currentNode = &Node{start,end,"numeric-terminal",[]*Node{}}
@@ -17,8 +17,8 @@ func numParser(start int ,tokenArray  []tokenStruct ) (end int, currentNode *Nod
 }
 
 // varParser: checks if the token at the start index is a variable, if it is it appends to the tree
-func varParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *Node ,err error) {  
-	if start < len(tokenArray) && tokenArray[start].Type == VAR {
+func varParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node ,err error) {  
+	if start < len(tokenArray) && tokenArray[start].Type ==  (VAR) {
 		//println("Variable parser succeeded")
 		end = start + 1
 		currentNode = &Node{start,end,"variable-terminal",[]*Node{}}
@@ -30,8 +30,8 @@ func varParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *Node
 
 
 // addOpParser: checks if the token at the start index is an addition operator, if it is it appends to the tree
-func addOpParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *Node ,err error) {
-	if start < len(tokenArray) && tokenArray[start].Type == ADD_OP  {
+func addOpParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node ,err error) {
+	if start < len(tokenArray) &&( tokenArray[start].Type ==  (ADD) ||  tokenArray[start].Type ==  (SUB)) {  
 		//println("Operator parser succeeded")
 		end = start + 1
 		currentNode = &Node{start,end,"addition operator-terminal",[]*Node{}}
@@ -42,8 +42,8 @@ func addOpParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *No
 }
 
 // multOpParser: checks if the token at the start index is a multiplication operator, if it is it appends to the tree
-func multOpParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *Node ,err error) {  
-	if start < len(tokenArray) && tokenArray[start].Type == MULT_OP {
+func multOpParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node ,err error) {  
+	if start < len(tokenArray) && (tokenArray[start].Type ==  (MUL) ||  tokenArray[start].Type ==  DIV  ){
 		//println("Operator parser succeeded")
 		end = start + 1
 		currentNode = &Node{start,end,"multiplication operator-terminal",[]*Node{}}
@@ -54,8 +54,8 @@ func multOpParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *N
 
 }
 
-func assignParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *Node ,err error)  {
-	if start < len(tokenArray)  && tokenArray[start].Type == ASSIGN {
+func assignParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node ,err error)  {
+	if start < len(tokenArray)  && tokenArray[start].Type ==  (ASSIGN) {
 		//println("Assign parser succeeded")
 		end = start + 1
 		currentNode = &Node{start,end,"assign-terminal",[]*Node{}}
@@ -65,8 +65,8 @@ func assignParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *N
 	return -1 ,nil , errors.New("failed to parse")  
 }
 
-func lbParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *Node ,err error) {
-	if start < len(tokenArray) && tokenArray[start].Type == LEFT_BRACKET {
+func openParanParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node ,err error) {
+	if start < len(tokenArray) && tokenArray[start].Type ==  (OPEN_PARAN) {
 		//println("Left bracket parser succeeded")
 		end = start + 1
 		currentNode = &Node{start,end,"left bracket-terminal",[]*Node{}}
@@ -75,8 +75,8 @@ func lbParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *Node 
 	return -1 ,nil , errors.New("failed to parse")  	
 }
 
-func rbParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *Node ,err error) {
-	if start < len(tokenArray) && tokenArray[start].Type == RIGHT_BRACKET {
+func closedParanParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node ,err error) {
+	if start < len(tokenArray) && tokenArray[start].Type ==  (CLOSE_PARAN) {
 		//println("Right bracket parser succeeded")
 		end = start + 1
 		currentNode = &Node{start,end,"right bracket-terminal",[]*Node{}}

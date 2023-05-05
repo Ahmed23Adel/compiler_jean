@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func codeParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *Node , err error) {
+func codeParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node , err error) {
 	
 	option1 := []parserFunction{stmtParser , codeParser}
 	option2 := []parserFunction{}
@@ -26,7 +26,7 @@ func codeParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *Nod
 	
 }
 
-func stmtParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *Node , err error) {  
+func stmtParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node , err error) {  
 	option1 := []parserFunction{varParser,assignParser,exprParser} 
 
 	options := [][]parserFunction{option1}
@@ -45,7 +45,7 @@ func stmtParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *Nod
 
 
 
-func exprParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode  *Node  , err error) {  
+func exprParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode  *Node  , err error) {  
 	option1 := []parserFunction{termParser,addOpParser,exprParser}
 	option2 := []parserFunction{termParser}
 
@@ -63,8 +63,8 @@ func exprParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode  *No
 	return -1 ,nil ,errors.New("failed to parse")
 }
 
-func factorParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode  *Node   , err error) {
-	option1 := []parserFunction{lbParser,exprParser,rbParser}
+func factorParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode  *Node   , err error) {
+	option1 := []parserFunction{openParanParser,exprParser,closedParanParser}
 	option2 := []parserFunction{varParser}
 	option3 := []parserFunction{numParser}
 
@@ -83,7 +83,7 @@ func factorParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode  *
 	return -1 , nil,errors.New("failed to parse")
 }
 
-func termParser(start int ,tokenArray  []tokenStruct ) (end int,currentNode *Node , err error) {  
+func termParser(start int ,tokenArray  []TokenStruct ) (end int,currentNode *Node , err error) {  
 	option1 := []parserFunction{factorParser,multOpParser,termParser}
 	option2 := []parserFunction{factorParser}
 

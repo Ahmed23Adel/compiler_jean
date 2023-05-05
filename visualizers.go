@@ -5,13 +5,13 @@ import (
 	"strings"
 )
 
-func PrintGraph(root *Node , tokenArray  []tokenStruct) {
+func PrintGraph(root *Node , tokenArray  []TokenStruct) {
 	visited := make(map[*Node]bool)
 	fmt.Println("Printing tree")
 	printNode(root, visited, 0 ,tokenArray)
 }
 
-func printNode(node *Node, visited map[*Node]bool, depth int , tokenArray  []tokenStruct) {
+func printNode(node *Node, visited map[*Node]bool, depth int , tokenArray  []TokenStruct) {
 	if visited[node] {
 		return
 	}
@@ -30,7 +30,7 @@ func printNode(node *Node, visited map[*Node]bool, depth int , tokenArray  []tok
 	}
 }
 
-func printTree(node *Node , tokenArray  []tokenStruct) {
+func printTree(node *Node , tokenArray  []TokenStruct) {
     // Print the current node
     print("node name: " , node.name, ",Contents: ("  )
 	for i := node.start; i < node.end; i++ {
