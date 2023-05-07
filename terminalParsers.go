@@ -17,6 +17,7 @@ func numParser(start int, tokenArray []TokenStruct, globalSymbolTable *symbolTab
 }
 
 // varParser: checks if the token at the start index is a variable, if it is it appends to the tree
+// TODO check variable is present in symbol table
 func varParser(start int, tokenArray []TokenStruct, globalSymbolTable *symbolTable) (end int, currentNode *Node, errParsing error, errSemantic error) {
 	if start < len(tokenArray) && tokenArray[start].Type == (VAR) {
 		//println("Variable parser succeeded")

@@ -339,6 +339,7 @@ func inlineFunDeclParser(start int, tokenArray []TokenStruct, globalSymbolTable 
 			var args dtypeStructList
 			idxReturn := -1
 			for i := start + 2; i < end; i++ {
+				// TODO don't put it in dtype but put in the new referenced symbol table and make dtype nil for function
 				if !argsEnd {
 					// I will put return at end of array
 					// if name and val are nil they it return nothing
