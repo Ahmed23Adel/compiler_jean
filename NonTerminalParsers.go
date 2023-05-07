@@ -326,21 +326,8 @@ func arg2Parser(start int, tokenArray []TokenStruct, globalSymbolTable *symbolTa
 
 }
 func inlineFunDeclParser(start int, tokenArray []TokenStruct, globalSymbolTable *symbolTable) (end int, currentNode *Node, errParsing error, errSemantic error) {
-	option1 := []parserFunction{
-		varParser,
-		openParanParser,
-		argsParser,
-		closedParanParser,
-		colonParser,
-		varTypeParser,
-		assignParser,
-		exprParser}
-	option2 := []parserFunction{varParser,
-		openParanParser,
-		argsParser,
-		closedParanParser,
-		assignParser,
-		exprParser}
+	option1 := []parserFunction{varParser, openParanParser, argsParser, closedParanParser, colonParser, varTypeParser, assignParser, exprParser}
+	option2 := []parserFunction{varParser, openParanParser, argsParser, closedParanParser, assignParser, exprParser}
 	// inline_fun_decl --> var (args): ret = expr |  var (args) = expr
 	options := [][]parserFunction{option1, option2}
 
@@ -348,7 +335,27 @@ func inlineFunDeclParser(start int, tokenArray []TokenStruct, globalSymbolTable 
 		end, currentNode, errParsing, errSemantic = parseSequential(start, option, tokenArray, globalSymbolTable)
 		if errParsing == nil && errSemantic == nil {
 			currentNode.name = "inline_fun_decl"
-			err2 := pushFunctionIfPossible(tokenArray[start].Val, dtypeStructList{list: []dtypeStruct{dtypeStruct{name: DTYPE_INT}}}, OTHER_FREE, globalSymbolTable) // z = x + y // z if not in symbol table insert if it's is then do nothing // x, y must be in symbol table
+			argsEnd := false
+			var args dtypeStructList
+			idxReturn := -1
+			for i := start + 2; i < end; i++ {
+				if !argsEnd {
+					// I will put return at end of array
+					// if name and val are nil they it return nothing
+					if tokenArray[i].Type == VAR {
+						args.list = append(args.list, dtypeStruct{name: tokenArray[i].Val, dtype: tokenArray[i+2].Val})
+						i += 1
+					}
+					if tokenArray[i].Type == CLOSE_PARAN {
+						argsEnd = true
+						idxReturn = i + 2
+						break
+
+					}
+				}
+			}
+			args.list = append(args.list, dtypeStruct{dtype: tokenArray[idxReturn].Val})
+			err2 := pushFunctionIfPossible(tokenArray[start].Val, args, OTHER_FREE, globalSymbolTable) // z = x + y // z if not in symbol table insert if it's is then do nothing // x, y must be in symbol table
 			if err2 == nil {
 				// errorString = err2.Error()
 				return end, currentNode, nil, nil
