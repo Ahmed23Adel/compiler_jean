@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
-	"os"
 )
 
 func main() {
 
-	fileName := os.Args[1]
+	fileName := "test1.jean"
+	globalSymbolTable := symbolTable{list: make([]symbolTableRow, 0)}
+	globalSymbolTable.pointerToHeader = &globalSymbolTable
+
 	tokensArray := Lexer(fileName)
 	//fmt.Println(tokensArray)
 	arraysWithoutSep := []TokenStruct{}
@@ -24,6 +26,7 @@ func main() {
 		fmt.Println(token.Type, token.Val)
 	}
 	fmt.Println("Listed all tokens")
-	parseDocument(arraysWithoutSep)
+	parseDocument(arraysWithoutSep, &globalSymbolTable)
+	fmt.Println(globalSymbolTable)
 
 }
