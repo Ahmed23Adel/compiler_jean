@@ -31,15 +31,20 @@ type symbolTableRowOther string
 // name will be x and type will be float
 // in case of variable
 // name will be float
-// type dtype struct{
-// 	name string
-// 	type
-// }
+// type will be nil
+type dtypeStruct struct {
+	name  string
+	dtype string
+}
+
+type dtypeStructList struct {
+	list []dtypeStruct
+}
 
 type symbolTableRow struct {
 	name              string
 	kind              symbolTableRowKind  // function, par, var
-	dtype             symbolTableRowDtype // int float, char, if function it will be x int y float,bool
+	dtype             dtypeStructList     // int float, char, if function it will be x int y float,bool
 	other             symbolTableRowOther // const?
 	pointerToNewTable *[]symbolTable      //{{}}
 }
@@ -49,7 +54,7 @@ type symbolTable struct {
 	pointerToHeader *symbolTable
 }
 
-func pushVariableIfPossible(name string, dtype symbolTableRowDtype, other symbolTableRowOther, globalSymbolTable *symbolTable) error {
+func pushVariableIfPossible(name string, dtype dtypeStruct, other symbolTableRowOther, globalSymbolTable *symbolTable) error {
 	if !isVariableExistInSymbolTable(name, globalSymbolTable) {
 		for _, row := range globalSymbolTable.list {
 			fmt.Println("k1")
@@ -59,13 +64,13 @@ func pushVariableIfPossible(name string, dtype symbolTableRowDtype, other symbol
 			}
 
 		}
-		(*globalSymbolTable).list = append((*globalSymbolTable).list, symbolTableRow{name: name, kind: KIND_VARIABLE, dtype: dtype, other: other})
+		(*globalSymbolTable).list = append((*globalSymbolTable).list, symbolTableRow{name: name, kind: KIND_VARIABLE, dtype: dtypeStructList{list: []dtypeStruct{dtype}}, other: other})
 		return nil
 	}
 	return nil
 }
 
-func pushFunctionIfPossible(name string, dtype symbolTableRowDtype, other symbolTableRowOther, globalSymbolTable *symbolTable) error {
+func pushFunctionIfPossible(name string, dtype dtypeStructList, other symbolTableRowOther, globalSymbolTable *symbolTable) error {
 	if !isFunctoinExistInSymbolTable(name, globalSymbolTable) {
 		for _, row := range globalSymbolTable.list {
 			fmt.Println("k1")
@@ -81,7 +86,7 @@ func pushFunctionIfPossible(name string, dtype symbolTableRowDtype, other symbol
 	return nil
 }
 
-func pushVariable(name string, dtype symbolTableRowDtype, other symbolTableRowOther, globalSymbolTable *symbolTable) error {
+func pushVariable(name string, dtype dtypeStructList, other symbolTableRowOther, globalSymbolTable *symbolTable) error {
 	for _, row := range globalSymbolTable.list {
 		fmt.Println("k1")
 		if row.kind == KIND_VARIABLE && row.name == name {

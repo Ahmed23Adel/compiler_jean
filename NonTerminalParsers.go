@@ -61,7 +61,8 @@ func assignmentStmtParser(start int, tokenArray []TokenStruct, globalSymbolTable
 		end, currentNode, errParsing, errSemantic = parseSequential(start, option, tokenArray, globalSymbolTable)
 		if errParsing == nil && errSemantic == nil {
 			currentNode.name = "assignmentStmt"
-			err2 := pushVariableIfPossible(tokenArray[start].Val, symbolTableRowDtype(tokenArray[start].Type), OTHER_FREE, globalSymbolTable) // z = x + y // z if not in symbol table insert if it's is then do nothing // x, y must be in symbol table
+			// TODO: y= expr you must calc output tpye of this expression
+			err2 := pushVariableIfPossible(tokenArray[start].Val, dtypeStruct{dtype: string(tokenArray[end-1].Type)}, OTHER_FREE, globalSymbolTable) // z = x + y // z if not in symbol table insert if it's is then do nothing // x, y must be in symbol table
 			for i := end - 1; i >= start+2; i-- {
 				if tokenArray[i].Type == VAR && !isVariableExistInSymbolTable(tokenArray[i].Val, globalSymbolTable) {
 					return -1, nil, nil, errors.New("variable " + tokenArray[i].Val + " not found in symbol table. Used before declaration")
@@ -88,18 +89,18 @@ func functionHeaderBodyParser(start int, tokenArray []TokenStruct, globalSymbolT
 		end, currentNode, errParsing, errSemantic = parseSequential(start, option, tokenArray, globalSymbolTable)
 		if errParsing == nil && errSemantic == nil {
 			currentNode.name = "assignmentStmt"
-			err2 := pushFunctionIfPossible(tokenArray[start].Val, symbolTableRowDtype(tokenArray[start].Type), OTHER_FREE, globalSymbolTable) // z = x + y // z if not in symbol table insert if it's is then do nothing // x, y must be in symbol table
-			for i := end - 1; i >= start+2; i-- {
-				if tokenArray[i].Type == VAR && !isVariableExistInSymbolTable(tokenArray[i].Val, globalSymbolTable) {
-					return -1, nil, nil, errors.New("variable " + tokenArray[i].Val + " not found in symbol table. Used before declaration")
-				}
-			}
-			if err2 == nil {
-				// errorString = err2.Error()
-				return end, currentNode, nil, nil
-			}
+			// err2 := pushFunctionIfPossible(tokenArray[start].Val, symbolTableRowDtype(tokenArray[start].Type), OTHER_FREE, globalSymbolTable) // z = x + y // z if not in symbol table insert if it's is then do nothing // x, y must be in symbol table
+			// for i := end - 1; i >= start+2; i-- {
+			// 	if tokenArray[i].Type == VAR && !isVariableExistInSymbolTable(tokenArray[i].Val, globalSymbolTable) {
+			// 		return -1, nil, nil, errors.New("variable " + tokenArray[i].Val + " not found in symbol table. Used before declaration")
+			// 	}
+			// }
+			// if err2 == nil {
+			// 	// errorString = err2.Error()
+			// 	return end, currentNode, nil, nil
+			// }
 
-			return -1, nil, nil, err2
+			// return -1, nil, nil, err2
 
 		}
 	}
@@ -347,7 +348,7 @@ func inlineFunDeclParser(start int, tokenArray []TokenStruct, globalSymbolTable 
 		end, currentNode, errParsing, errSemantic = parseSequential(start, option, tokenArray, globalSymbolTable)
 		if errParsing == nil && errSemantic == nil {
 			currentNode.name = "inline_fun_decl"
-			err2 := pushFunctionIfPossible(tokenArray[start].Val, symbolTableRowDtype(tokenArray[start].Type), OTHER_FREE, globalSymbolTable) // z = x + y // z if not in symbol table insert if it's is then do nothing // x, y must be in symbol table
+			err2 := pushFunctionIfPossible(tokenArray[start].Val, dtypeStructList{list: []dtypeStruct{dtypeStruct{name: DTYPE_INT}}}, OTHER_FREE, globalSymbolTable) // z = x + y // z if not in symbol table insert if it's is then do nothing // x, y must be in symbol table
 			if err2 == nil {
 				// errorString = err2.Error()
 				return end, currentNode, nil, nil

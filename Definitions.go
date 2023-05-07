@@ -12,7 +12,7 @@ const (
 	ILLEGAL             = "illegal"
 	VAR                 = "variable"
 	ASSIGN              = "assign (=)"
-	NUMBER              = "number (0-9)"
+	NUMBER              = "int"
 	FLOAT               = "float"
 	CHAR                = "char"
 	ADD                 = "add (+)"

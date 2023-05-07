@@ -1,1 +1,1 @@
-x = 4
+f4(x: int, y:int, t:int): int = 4 * 6
