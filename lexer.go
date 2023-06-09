@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
+	"sort"
 )
 
 func Lexer(filename string) []TokenStruct {
@@ -23,31 +24,114 @@ func readSample(filename string) string {
 	return fileContent
 }
 
-func removeComments(input string) string {
-
-	singleLineCommentRegex := regexp.MustCompile(`//.*?\n`)
-	multiLineCommentRegex := regexp.MustCompile(`(?s)/\*.*?\*/`)
-	newlineRegex := regexp.MustCompile(`^\s*$`)
-
-	// Remove single-line comments
-	input = singleLineCommentRegex.ReplaceAllString(input, "\n")
-
-	// Remove multi-line comments
-	input = multiLineCommentRegex.ReplaceAllString(input, "")
-
-	input = newlineRegex.ReplaceAllString(input, "")
-
-	return input
+type Position struct {
+	line   int
+	column int
 }
 
-func isFloat(input string) bool {
-	floatRegex := regexp.MustCompile(`^[0-9]*\.[0-9]+$`) // 0.2 .2
+func getPossilbeTerminals() []TokenStruct {
+	return []TokenStruct{TokenStruct{Type: RETURN, Val: "return"}, TokenStruct{Type: BREAK, Val: "break"}, TokenStruct{Type: CONINUE, Val: "continue"},
+		TokenStruct{Type: FLOAT, Val: "float"}, TokenStruct{Type: INT, Val: "int"}, TokenStruct{Type: CHAR, Val: "char"},
+		TokenStruct{Type: AND, Val: "and"}, TokenStruct{Type: OR, Val: "or"}, TokenStruct{Type: NOT, Val: "not"},
+		TokenStruct{Type: ABS, Val: "abs"}, TokenStruct{Type: SEPARATOR, Val: "\n"}, TokenStruct{Type: SPACE, Val: " "},
+		TokenStruct{Type: COMP, Val: "=="}, TokenStruct{Type: GTE, Val: ">="}, TokenStruct{Type: LTE, Val: "<="},
+		TokenStruct{Type: ADD, Val: "+"}, TokenStruct{Type: SUB, Val: "-"}, TokenStruct{Type: MUL, Val: "*"},
+		TokenStruct{Type: DIV, Val: "/"}, TokenStruct{Type: POWER, Val: "^"}, TokenStruct{Type: BIT_OR, Val: "|"},
+		TokenStruct{Type: BIT_AND, Val: "&"}, TokenStruct{Type: OPEN_PARAN, Val: "("}, TokenStruct{Type: CLOSE_PARAN, Val: ")"},
+		TokenStruct{Type: QUESTION_MARK, Val: "?"}, TokenStruct{Type: OPEN_CURLY_BRACKET, Val: "{"}, TokenStruct{Type: CLOSE_CURLY_BRACKET, Val: "}"},
+		TokenStruct{Type: EXCLAMATION_MARK, Val: "!"}, TokenStruct{Type: COLON, Val: ":"}, TokenStruct{Type: ASSIGN, Val: "="},
+		TokenStruct{Type: GT, Val: ">"}, TokenStruct{Type: LT, Val: "<"}, TokenStruct{Type: COMMA, Val: ","}}
+}
 
-	if floatRegex.MatchString(input) {  // 
+func lex_analyzer(input string) []TokenStruct {
+	tokens := make([]TokenStruct, 0)
+	//
+	possibleTerminals := getPossilbeTerminals()
+	sort.Slice(possibleTerminals, func(i, j int) bool {
+		return len(possibleTerminals[i].Val) > len(possibleTerminals[j].Val)
+	})
+	maxLen := len(possibleTerminals[0].Val) - 1
+	current_pos := Position{line: 0, column: 0}
+	for i := 0; i < len(input); i++ {
+		found := false
+		for lookahead := maxLen; lookahead >= 0; lookahead-- {
+			if i+lookahead < len(input) {
+				if lookahead > 1 && handleComments(&input, &i, &current_pos, &found) {
+					break
+				}
+				for j := 0; j < len(possibleTerminals); j++ {
+					if handleMultiLetterToken(&input, &i, &current_pos, possibleTerminals[j].Val, &tokens, possibleTerminals[j].Type) {
+						found = true
+						break
+					}
+
+				}
+			}
+			if found {
+				break
+			}
+		}
+		if found {
+			continue
+		}
+		if isInt(string(input[i])) {
+			handleRealNumbers(&i, &tokens, &input, &current_pos)
+			continue
+
+		} else if (string(input[i]) == "'" && string(input[i+2]) == "'") && isChar(string(input[i+1])) {
+			handleChar(&current_pos, &input, &i, &tokens)
+			continue
+		} else {
+			handleIdentifier(&i, &input, &tokens, &current_pos)
+			continue
+		}
+
+	}
+
+	return tokens
+}
+
+func handleMultiLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]TokenStruct, token Token) bool {
+	if string((*input)[*idx]) == " " {  // 
+		forwardPosOneSpace(current_pos)
 		return true
 	}
-	return false
+	if *idx+len(searchable) < len(*input)-1 {
+		if string((*input)[(*idx):(*idx)+len(searchable)]) == searchable {
+			(*tokens) = append((*tokens), TokenStruct{Type: (token), Val: searchable, Pos: *current_pos})
+			(*current_pos).column += len(searchable)
+			*idx += len(searchable) - 1
+			return true
+		}
 
+	}
+	return false
+}
+
+func handleOneLineComment(input *string, idx *int, current_pos *Position) {
+	*idx = findFirstRune((*input), (*idx), '\n') - 1
+}
+
+func handleBlockComment(input *string, idx *int, current_pos *Position) {
+	var numNewLines, distFromLastNewLine int
+	*idx, numNewLines, distFromLastNewLine = findFirstStr(*input, *idx, "*/")
+	(*current_pos).line += numNewLines
+	(*current_pos).column += distFromLastNewLine
+}
+
+func handleIdentifier(i *int, input *string, tokens *[]TokenStruct, current_pos *Position) {
+	counter1 := *i
+	counter2 := 0
+	if counter1+counter2 < len((*input)) && isCharaToZ(string((*input)[*i])) {
+
+		for (isCharaToZ(string((*input)[counter1+counter2]))) || (*input)[counter1+counter2] == '_' || ((*input)[counter1+counter2] >= '0') && ((*input)[counter1+counter2] <= '9') {
+			counter2 += 1
+
+		}
+		*i += counter2 - 1
+		(*tokens) = append((*tokens), TokenStruct{Type: (VAR), Val: string((*input)[counter1 : counter1+counter2]), Pos: *current_pos})
+		current_pos.column += counter2
+	}
 }
 
 func isInt(input string) bool {
@@ -80,46 +164,14 @@ func isCharaToZ(input string) bool {
 
 }
 
-func isIdentifier(input string) bool {
-	idenRegex := regexp.MustCompile(`^[a-zA-Z_][a-zA-Z0-9_]*$`)
+func isFloat(input string) bool {
+	floatRegex := regexp.MustCompile(`^[0-9]*\.[0-9]+$`) // 0.2 .2
 
-	if idenRegex.MatchString(input) {
+	if floatRegex.MatchString(input) {
 		return true
 	}
 	return false
-}
 
-type Position struct {
-	line   int
-	column int
-}
-
-func posGoNextLine(pos *Position) {
-	(*pos).line = pos.line + 1
-	(*pos).column = 0
-}
-
-// func appendSeparator(tokens *[]string) {
-// 	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1] !=   (SEPARATOR) {
-// 		*tokens = append((*tokens),   (SEPARATOR))
-// 	}
-// }
-
-func handleOneLineComment(input *string, idx *int, current_pos *Position) {
-	// posGoNextLine(current_pos)
-	*idx = findFirstRune((*input), (*idx), '\n') - 1
-	//appendSeparator(&tokens)
-}
-
-func handleBlockComment(input *string, idx *int, current_pos *Position) {
-	var numNewLines, distFromLastNewLine int
-	*idx, numNewLines, distFromLastNewLine = findFirstStr(*input, *idx, "*/")
-	(*current_pos).line += numNewLines
-	(*current_pos).column += distFromLastNewLine
-
-	// if len(tokens) > 0 && tokens[len(tokens)-1] !=   (SEPARATOR) {
-	// 	tokens = append(tokens,   (SEPARATOR))
-	// }
 }
 
 func forwardPosOneSpace(current_pos *Position) {
@@ -130,217 +182,21 @@ func handleNewLine(current_pos *Position, tokens *[]TokenStruct) {
 	if len((*tokens)) > 0 && (*tokens)[len((*tokens))-1].Type != (SEPARATOR) {
 		*tokens = append((*tokens), TokenStruct{Type: (SEPARATOR), Val: "\n", Pos: *current_pos})
 	}
-
 	current_pos.line += 1
 	current_pos.column = 0
 }
 
-func handleOneLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]TokenStruct, token Token) bool {
-	if string((*input)[(*idx)]) == searchable {
-		(*tokens) = append((*tokens), TokenStruct{Type: (token), Val: searchable, Pos: *current_pos})
-		(*current_pos).column += 1
+func handleComments(input *string, i *int, current_pos *Position, found *bool) bool {
+	if string((*input)[*i])+string((*input)[(*i)+1]) == "//" {
+		handleOneLineComment(input, i, current_pos)
+		(*found) = true
 		return true
+
+	} else if string((*input)[(*i)])+string((*input)[(*i)+1]) == "/*" { // block comments
+		handleBlockComment(input, i, current_pos)
+		(*found) = true
 	}
 	return false
-}
-
-func handleMultiLetterToken(input *string, idx *int, current_pos *Position, searchable string, tokens *[]TokenStruct, token Token) bool {
-	if *idx+len(searchable) < len(*input)-1 {
-		if string((*input)[(*idx):(*idx)+len(searchable)]) == searchable {
-			(*tokens) = append((*tokens), TokenStruct{Type: (token), Val: searchable, Pos: *current_pos})
-			(*current_pos).column += len(searchable)
-			*idx += len(searchable) - 1
-			return true
-		}
-
-	}
-	return false
-}
-
-func lex_analyzer(input string) []TokenStruct {
-	tokens := make([]TokenStruct, 0)
-	current_pos := Position{line: 0, column: 0}
-	for i := 0; i < len(input); i++ {
-		// if i > 50 {
-		// 	break
-		// }
-		if input[i] == '-' && isInt(string(input[i+1])) {
-			i += 1
-			current_pos.column += 1
-			handleRealNumbers(&i, &tokens, &input, &current_pos)
-			tokens[len(tokens)-1].Val = "-" + tokens[len(tokens)-1].Val
-			continue
-		}
-		if input[i] == '-' && isInt(string(input[i+2])) {
-			i += 2
-			current_pos.column += 2
-			handleRealNumbers(&i, &tokens, &input, &current_pos)
-			tokens[len(tokens)-1].Val = "-" + tokens[len(tokens)-1].Val
-			continue
-		}
-		if i+5 < len(input) { // handle 6 characters
-			if handleMultiLetterToken(&input, &i, &current_pos, "return", &tokens, RETURN) { //
-				continue
-			}
-		}
-		if i+4 < len(input) { // handle 5 characters
-			if handleMultiLetterToken(&input, &i, &current_pos, "float", &tokens, FLT) { //
-				continue
-			} else if handleMultiLetterToken(&input, &i, &current_pos, "break", &tokens, BREAK) { //
-				continue
-
-			}
-		}
-		if i+3 < len(input) { // handle 4 characters
-			if handleMultiLetterToken(&input, &i, &current_pos, "char", &tokens, CHR) { //
-				continue
-			}
-		}
-		if i+2 < len(input) { // handle 3 characters
-			if handleMultiLetterToken(&input, &i, &current_pos, "and", &tokens, AND) { //
-				continue
-
-			} else if handleMultiLetterToken(&input, &i, &current_pos, "or", &tokens, OR) { //
-				continue
-
-			} else if handleMultiLetterToken(&input, &i, &current_pos, "not", &tokens, NOT) { //
-				continue
-
-			} else if handleMultiLetterToken(&input, &i, &current_pos, "abs", &tokens, ABS) { //
-				continue
-			} else if handleMultiLetterToken(&input, &i, &current_pos, "int", &tokens, INT) { //
-				continue
-			} else if (string(input[i]) == "'" && string(input[i+2]) == "'") && isChar(string(input[i+1])) {
-				handleChar(&current_pos, &input, &i, &tokens)
-				continue
-			}
-		}
-		if i+1 < len(input) { // handle two characters
-			if string(input[i])+string(input[i+1]) == "//" {
-				handleOneLineComment(&input, &i, &current_pos)
-				continue
-
-			} else if string(input[i])+string(input[i+1]) == "/*" { // block comments
-				handleBlockComment(&input, &i, &current_pos)
-				continue
-			}
-			if string(input[i])+string(input[i+1]) == "==" {
-				handleComparator(&i, &input, &tokens, &current_pos)
-				continue
-			}
-			if string(input[i])+string(input[i+1]) == ">=" {
-				handleGTE(&i, &input, &tokens, &current_pos)
-				continue
-			}
-			if string(input[i])+string(input[i+1]) == "<=" {
-				handleLTE(&i, &input, &tokens, &current_pos)
-				continue
-			}
-		}
-		if i < len(input) { // handle one character
-			if string(input[i]) == " " { // space
-				forwardPosOneSpace(&current_pos)
-				continue
-			} else if input[i] == '\n' { // new line
-				handleNewLine(&current_pos, &tokens)
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "+", &tokens, ADD) { // +
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "-", &tokens, SUB) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "*", &tokens, MUL) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "/", &tokens, DIV) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "^", &tokens, POWER) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "%", &tokens, MOD) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "|", &tokens, BIT_OR) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "(", &tokens, OPEN_PARAN) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, ")", &tokens, CLOSE_PARAN) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "?", &tokens, QUESTION_MARK) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "{", &tokens, OPEN_CURLY_BRACKET) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "}", &tokens, CLOSE_CURLY_BRACKET) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "!", &tokens, EXCLAMATION_MARK) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, ":", &tokens, COLON) { //
-				continue
-
-			} else if handleOneLetterToken(&input, &i, &current_pos, "=", &tokens, ASSIGN) { //
-				continue
-			} else if handleOneLetterToken(&input, &i, &current_pos, "&", &tokens, BIT_AND) { //
-				continue
-			} else if handleOneLetterToken(&input, &i, &current_pos, ">", &tokens, GT) { //
-				continue
-			} else if handleOneLetterToken(&input, &i, &current_pos, "<", &tokens, LT) { //
-				continue
-			} else if handleOneLetterToken(&input, &i, &current_pos, ",", &tokens, COMMA) { //
-				continue
-			}
-		}
-
-		if isInt(string(input[i])) {
-			handleRealNumbers(&i, &tokens, &input, &current_pos)
-			continue
-
-		} else {
-			handleIdentifier(&i, &input, &tokens, &current_pos)
-			continue
-		}
-
-	}
-	return tokens
-}
-func handleComparator(i *int, input *string, tokens *[]TokenStruct, current_pos *Position) {
-	(*tokens) = append((*tokens), TokenStruct{Type: (COMP), Val: string((*input)[*i : *i+2]), Pos: *current_pos})
-	current_pos.column += 2
-	*i += 1
-}
-func handleGTE(i *int, input *string, tokens *[]TokenStruct, current_pos *Position) {
-	(*tokens) = append((*tokens), TokenStruct{Type: (GTE), Val: string((*input)[*i : *i+2]), Pos: *current_pos})
-	current_pos.column += 2
-	*i += 1
-}
-func handleLTE(i *int, input *string, tokens *[]TokenStruct, current_pos *Position) {
-	(*tokens) = append((*tokens), TokenStruct{Type: (LTE), Val: string((*input)[*i : *i+2]), Pos: *current_pos})
-	current_pos.column += 2
-	*i += 1
-}
-
-func handleIdentifier(i *int, input *string, tokens *[]TokenStruct, current_pos *Position) {
-	counter1 := *i
-	counter2 := 0
-	if counter1+counter2 < len((*input)) && isCharaToZ(string((*input)[*i])) {
-
-		for (isCharaToZ(string((*input)[counter1+counter2]))) || (*input)[counter1+counter2] == '_' || ((*input)[counter1+counter2] >= '0') && ((*input)[counter1+counter2] <= '9') {
-			counter2 += 1
-
-		}
-		*i += counter2 - 1
-		(*tokens) = append((*tokens), TokenStruct{Type: (VAR), Val: string((*input)[counter1 : counter1+counter2]), Pos: *current_pos})
-		current_pos.column += counter2
-	}
 }
 
 func handleRealNumbers(i *int, tokens *[]TokenStruct, input *string, current_pos *Position) {
