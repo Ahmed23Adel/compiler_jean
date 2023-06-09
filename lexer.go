@@ -43,7 +43,7 @@ func removeComments(input string) string {
 func isFloat(input string) bool {
 	floatRegex := regexp.MustCompile(`^[0-9]*\.[0-9]+$`) // 0.2 .2
 
-	if floatRegex.MatchString(input) {
+	if floatRegex.MatchString(input) {  // 
 		return true
 	}
 	return false

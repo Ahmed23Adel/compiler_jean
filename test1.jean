@@ -32,11 +32,12 @@ c = x + f()
 
 // Function declaration without args
 f2() {
-    x=t+n
+    x = t + n
+    y = 3
 }
 
 // inline Function declaration with args
-f4(x: int, y:int, t:int): int = 4 * 6
+add(x: int, y:int, t:int): int = x + y + t
 
 // Function call with args
 c = f(5, 6) + 4
