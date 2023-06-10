@@ -73,6 +73,8 @@ type TokenStruct struct {
 	Type Token  //,
 	Val  string //x
 	Pos  Position
+	Usage use
 }
 
 type Token string
+type use string

@@ -25,6 +25,7 @@ func main() {
 	}
 	fmt.Println("Listed all tokens")
 	parseDocument(arraysWithoutSep)
+	semanticCheck(arraysWithoutSep)
 
 }
 /////////
