@@ -88,7 +88,7 @@ func factorParser(start int, tokenArray []TokenStruct) (end int, currentNode *No
 }
 
 func termParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node, err error) {
-	option1 := []parserFunction{factorParser, multOpParser, termParser} // term --> factor mult_op term
+	option1 := []parserFunction{factorParser, OpLevel1Parser, termParser} // term --> factor mult_op term
 	option2 := []parserFunction{factorParser}                           // term --> factor
 
 	options := [][]parserFunction{option1, option2}

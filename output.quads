@@ -7,7 +7,7 @@ Idx Op      Arg1    Arg2    Result
 6   +       4       t0      t1      
 7   =       t1              y       
 8   *       x       y       t0      
-9   /       4       5       t1      
+9   >=      4       5       t1      
 10  +       t1      t0      t2      
 11  =       t2              z       
 12  +       x       4       t0      

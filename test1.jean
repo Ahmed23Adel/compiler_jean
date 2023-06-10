@@ -1,6 +1,6 @@
 x =  ( 5 * 3 ) + ( 2  * 4)  // normal statements
 y = 4 + 2 * x
-z = (4 / 5) +x *y
+z = (4 >= 5) +x *y
 ahh = 5*2 +3*(x+4) +15*y
 
 
