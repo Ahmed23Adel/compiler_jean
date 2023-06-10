@@ -26,7 +26,8 @@ func main() {
 	fmt.Println("Listed all tokens")
 	cfg := parseDocument(arraysWithoutSep)
 	if cfg != nil {
-		quads := GenerateQuads(cfg , arraysWithoutSep)
+		quads := EvaluateCode(cfg , arraysWithoutSep )
+		quads = Jump2Goto(quads)
 		PrintQuadruplesToFile(quads , "output.quads")
 	}
 

@@ -71,6 +71,7 @@ const (
 	OPEN_PARAN_TERMINAL    = "("
 	CLOSED_PARAN_TERMINAL  = ")"
 	ASSIGN_TERMINAL       = "="
+	QUESTION_MARK_TERMINAL = "?"
 )
 
 type TokenStruct struct {

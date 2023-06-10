@@ -142,7 +142,7 @@ func questionMarkParser(start int, tokenArray []TokenStruct) (end int, currentNo
 	if start < len(tokenArray) && tokenArray[start].Type == (QUESTION_MARK) {
 		//println("Right bracket parser succeeded")
 		end = start + 1
-		currentNode = &Node{start, end, "question mark-terminal", []*Node{}}
+		currentNode = &Node{start, end, QUESTION_MARK_TERMINAL, []*Node{}}
 		return end, currentNode, nil
 	}
 	return -1, nil, errors.New("failed to parse")

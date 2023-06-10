@@ -1,6 +1,8 @@
 package main
 
-import "strconv"
+import (
+	"strconv"
+)
 
 type Quadruple struct {
 	Op     string
@@ -102,39 +104,77 @@ func EvaluateExpression(CFG *BinaryNode) (quads []Quadruple ,lastVar string ) {
 	return quads , lastVar
 }
 
-func EvaluateStatement(stmt *Node , TokenArray []TokenStruct) (quads []Quadruple ) {
-	quads = []Quadruple{}
+func EvaluateStatement(stmt *Node , TokenArray []TokenStruct , ) (finalQuads []Quadruple ) {
+	finalQuads = []Quadruple{}
 	if len(stmt.Children ) >1  && stmt.Children[1].Type == ASSIGN_TERMINAL {  // assignment statement
 		variable := TokenArray[stmt.Children[0].Start].Val
 		expr := stmt.Children[2] // third is the expression
 		binaryTree := ExpressionCFG2BinaryTree(expr, TokenArray)
 		binaryTree.Visualize()
 		qs , lst := EvaluateExpression(binaryTree)
-		quads = append(qs, Quadruple{Op: "=" , Arg1: lst , Arg2: "" , Result: variable})
+		finalQuads = append(qs, Quadruple{Op: "=" , Arg1: lst , Arg2: "" , Result: variable})
+	} else if len(stmt.Children) >3  && stmt.Children[0].Type == OPEN_PARAN_TERMINAL && stmt.Children[3].Type == QUESTION_MARK_TERMINAL {
+		expr := stmt.Children[1] // second is the expression
+		codeIfTrue := stmt.Children[5]
+		elseStmt := stmt.Children[7]
+		
+		binaryTree := ExpressionCFG2BinaryTree(expr, TokenArray)
+		condition_quads , lst := EvaluateExpression(binaryTree)
+
+		finalQuads = append(finalQuads , condition_quads...)
+		true_quads := EvaluateCode(codeIfTrue , TokenArray)
+		else_pos :=  len(true_quads) +1
+		
+		if len(elseStmt.Children) !=0 {
+			codeIfFalse := elseStmt.Children[2]
+			false_quads := EvaluateCode(codeIfFalse,TokenArray)
+			else_pos +=1
+			finalQuads = append(finalQuads, Quadruple{Op: "JUMP_IF_NOT" , Arg1: lst , Arg2: "" , Result: strconv.Itoa(else_pos)})
+			finalQuads = append(finalQuads, true_quads...)
+			finalQuads = append(finalQuads, Quadruple{Op: "JUMP" , Arg1: lst , Arg2: "" , Result: strconv.Itoa( len(false_quads)+1)})
+			finalQuads = append(finalQuads, false_quads...)
+		}else {
+			finalQuads = append(finalQuads, Quadruple{Op: "JUMP_IF_NOT" , Arg1: lst , Arg2: "" , Result: strconv.Itoa(else_pos)})
+			finalQuads = append(finalQuads, true_quads...)
+		}
+
+		
 	}
-	return quads
+	return finalQuads
 }
 
-func GenerateQuads(CFG *Node, TokenArray []TokenStruct) (finalQuads []Quadruple) {
+func EvaluateCode(CFG *Node, TokenArray []TokenStruct   ) (finalQuads []Quadruple) {
 	finalQuads = []Quadruple{}
 	stmt , CFG := GetStatement(CFG)
-	print("Length of statements is")
 
 	// loop over stmts
 	for stmt != nil  {
-		// assume all statements are assignments
-		// for _, child := range stmt.Children {
-		// 	println(child.Type)
-		// }
-			
-			quads := EvaluateStatement(stmt , TokenArray)
-			finalQuads = append(finalQuads, quads...)
-			
-			// for _, quad := range quads {
-			// 	println("Op:", quad.Op ,"Arg1:", quad.Arg1 ,"Arg2:", quad.Arg2 ,"Result:", quad.Result)
-			stmt , CFG = GetStatement(CFG)
+		
+		quads := EvaluateStatement(stmt , TokenArray )
+		finalQuads = append(finalQuads, quads...)
+		
+		// for _, quad := range quads {
+		// 	println("Op:", quad.Op ,"Arg1:", quad.Arg1 ,"Arg2:", quad.Arg2 ,"Result:", quad.Result)
+		stmt , CFG = GetStatement(CFG)
 	}
 		
 	
 	return finalQuads
+}
+
+func Jump2Goto(quads []Quadruple) []Quadruple {
+	for i , quad := range quads {
+		if quad.Op == "JUMP" {
+			quads[i].Op = "GOTO" 
+			converted , _ := strconv.Atoi(quad.Result)
+			target := i + converted
+			quads[i].Result = strconv.Itoa(target)
+		} else if quad.Op == "JUMP_IF_NOT" {
+			quads[i].Op = "GOTO_IF_NOT" 
+			converted , _ := strconv.Atoi(quad.Result)
+			target := i + converted
+			quads[i].Result = strconv.Itoa(target)
+		}
+	}
+	return quads
 }
