@@ -3,8 +3,12 @@ package main
 type Node struct {
 	Start    int
 	End      int
-	Display  string
+	Type     string
 	Children []*Node
+}
+
+func (n *Node) IsTerminal() bool {
+	return len(n.Children) == 0
 }
 
 const (
@@ -60,14 +64,14 @@ const (
 	CONDITIONAL_STATEMENT_NON_TERMINAL = "Conditional Statement"
 	ELSE_NON_TERMINAL                  = "Else"
 	LOOP_STATEMENT_NON_TERMINAL        = "Loop Statement"
-)
 
-type Quadruple struct {
-	Op     string
-	Arg1   string
-	Arg2   string
-	Result string
-}
+	// Terminals
+	OPEN_BRACES_TERMINAL   = "{"
+	CLOSED_BRACES_TERMINAL = "}"
+	OPEN_PARAN_TERMINAL    = "("
+	CLOSED_PARAN_TERMINAL  = ")"
+	ASSIGN_TERMINAL       = "="
+)
 
 type TokenStruct struct {
 	Type Token  //,

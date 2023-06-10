@@ -24,6 +24,10 @@ func main() {
 		fmt.Println(token.Type, token.Val)
 	}
 	fmt.Println("Listed all tokens")
-	parseDocument(arraysWithoutSep)
+	cfg := parseDocument(arraysWithoutSep)
+	if cfg != nil {
+		quads := GenerateQuads(cfg , arraysWithoutSep)
+		PrintQuadruplesToFile(quads , "output.quads")
+	}
 
 }

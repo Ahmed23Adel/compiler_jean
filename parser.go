@@ -28,20 +28,23 @@ func parseSequential(start int ,parsers []parserFunction ,tokenArray  []TokenStr
 }
 
 
-func parseDocument(tokenArray []TokenStruct)  {  
+func parseDocument(tokenArray []TokenStruct) *Node {  
 	end ,CFG ,err := codeParser(0,tokenArray)
 	if err != nil   {
 		fmt.Println("Failed to parse")
 		fmt.Println("Returned with error")
+		return nil
 	} else if end != len(tokenArray) {
 		PrintGraph(CFG, tokenArray)
 		fmt.Println("Failed to parse")
 		println("parser finished before the end of the document")
 		println("parser ended at ",end , " and document ended at ",len(tokenArray))
+		return nil
 	}else {
 		//printTree(CFG , tokenArray)
 		PrintGraph(CFG, tokenArray)
 		println("parser succeeded")
+		return CFG
 	}
 
 	
