@@ -26,9 +26,13 @@ func main() {
 	fmt.Println("Listed all tokens")
 	cfg := parseDocument(arraysWithoutSep)
 	if cfg != nil {
-		quads := EvaluateCode(cfg , arraysWithoutSep )
-		quads = Jump2Goto(quads)
-		PrintQuadruplesToFile(quads , "output.quads")
+		if(semanticCheck(arraysWithoutSep)){
+			quads := EvaluateCode(cfg , arraysWithoutSep )
+			quads = Jump2Goto(quads)
+			PrintQuadruplesToFile(quads , "output.quads")
+		}else{
+			fmt.Println("Sematic errors.")
+		}
 	}
 
 }
