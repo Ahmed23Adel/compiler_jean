@@ -1,4 +1,4 @@
-x = y + 36/4
+x = y - 36/4
 (x +4) ? {
 	x = 2
 	x = 3 +x
@@ -6,16 +6,16 @@ x = y + 36/4
 	(y >= 5)? {
 		y = 22*4 +x
 	} 
-	y = ( 5 * 3 ) + ( 2  * 4) 
+	y = ( 5 * 3 ) + ( 2  - 4) 
 	ahh = 5*2 +3*(x+4) +15*y
 }
 
 m =  u + 9
 f(x1: int, y1: int): int{ 
-    d = nah + oops
+    d = nah + oops
     x = y + Z
 }
-f2(x1: int, y1: int): int{ x = x1 + y1}
+f2(x1: int, y1: int): int{ x = x1 == y1}
 m =  u + 9
 
 
