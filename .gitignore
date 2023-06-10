@@ -8,10 +8,10 @@
 *.dll
 *.so
 *.dylib
+*.quads
 
 # Test binary, built with `go test -c`
 *.test
-*.quads
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
