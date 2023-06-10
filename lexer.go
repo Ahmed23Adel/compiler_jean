@@ -43,6 +43,13 @@ func getPossilbeTerminals() []TokenStruct {
 		TokenStruct{Type: GT, Val: ">"}, TokenStruct{Type: LT, Val: "<"}, TokenStruct{Type: COMMA, Val: ","}}
 }
 
+func countSeparators(tokens []TokenStruct,count* int) {
+	for _, token := range tokens {
+	  if token.Type == SEPARATOR {
+		*count++
+	  }
+	}
+}
 func lex_analyzer(input string) []TokenStruct {
 	tokens := make([]TokenStruct, 0)
 	//
@@ -53,14 +60,18 @@ func lex_analyzer(input string) []TokenStruct {
 	maxLen := len(possibleTerminals[0].Val) - 1
 	current_pos := Position{line: 0, column: 0}
 	for i := 0; i < len(input); i++ {
+		count:=0
+		countSeparators(tokens,&count)
 		found := false
 		for lookahead := maxLen; lookahead >= 0; lookahead-- {
 			if i+lookahead < len(input) {
 				if lookahead > 1 && handleComments(&input, &i, &current_pos, &found) {
+					current_pos.line=count
 					break
 				}
 				for j := 0; j < len(possibleTerminals); j++ {
 					if handleMultiLetterToken(&input, &i, &current_pos, possibleTerminals[j].Val, &tokens, possibleTerminals[j].Type) {
+						current_pos.line=count
 						found = true
 						break
 					}
@@ -76,13 +87,16 @@ func lex_analyzer(input string) []TokenStruct {
 		}
 		if isInt(string(input[i])) {
 			handleRealNumbers(&i, &tokens, &input, &current_pos)
+			current_pos.line=count
 			continue
 
 		} else if (string(input[i]) == "'" && string(input[i+2]) == "'") && isChar(string(input[i+1])) {
 			handleChar(&current_pos, &input, &i, &tokens)
+			current_pos.line=count
 			continue
 		} else {
 			handleIdentifier(&i, &input, &tokens, &current_pos)
+			current_pos.line=count
 			continue
 		}
 
