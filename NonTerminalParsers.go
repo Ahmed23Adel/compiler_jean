@@ -16,7 +16,7 @@ func codeParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
 			//fmt.Println("Code parser succeeded")
-			currentNode.Display = CODE_NON_TERMINAL
+			currentNode.Type = CODE_NON_TERMINAL
 			return end, currentNode, nil
 		}
 	}
@@ -40,7 +40,7 @@ func stmtParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
 			//fmt.Println("Statement parser succeeded")
-			currentNode.Display = STATEMENT_NON_TERMINAL
+			currentNode.Type = STATEMENT_NON_TERMINAL
 			return end, currentNode, nil
 		}
 	}
@@ -49,7 +49,7 @@ func stmtParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node
 }
 
 func exprParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node, err error) {
-	option1 := []parserFunction{termParser, addOpParser, exprParser} // expr --> term add_op expr
+	option1 := []parserFunction{termParser, OpLevel0Parser, exprParser} // expr --> term add_op expr
 	option2 := []parserFunction{termParser}                          // expr --> term
 
 	options := [][]parserFunction{option1, option2}
@@ -58,7 +58,7 @@ func exprParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
 			//fmt.Println("Expression parser succeeded at option ",i)
-			currentNode.Display = EXPRESSION_NON_TERMINAL
+			currentNode.Type = EXPRESSION_NON_TERMINAL
 			return end, currentNode, nil
 		}
 	}
@@ -79,7 +79,7 @@ func factorParser(start int, tokenArray []TokenStruct) (end int, currentNode *No
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
 			//fmt.Println("factor parser succeeded at option ",i)
-			currentNode.Display = FACTOR_NON_TERMINAL
+			currentNode.Type = FACTOR_NON_TERMINAL
 			return end, currentNode, nil
 		}
 	}
@@ -88,7 +88,7 @@ func factorParser(start int, tokenArray []TokenStruct) (end int, currentNode *No
 }
 
 func termParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node, err error) {
-	option1 := []parserFunction{factorParser, multOpParser, termParser} // term --> factor mult_op term
+	option1 := []parserFunction{factorParser, OpLevel1Parser, termParser} // term --> factor mult_op term
 	option2 := []parserFunction{factorParser}                           // term --> factor
 
 	options := [][]parserFunction{option1, option2}
@@ -98,7 +98,7 @@ func termParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
 			//fmt.Println("term parser succeeded at option ",i)
-			currentNode.Display = TERM_NON_TERMINAL
+			currentNode.Type = TERM_NON_TERMINAL
 			return end, currentNode, nil
 		}
 	}
@@ -115,7 +115,7 @@ func ifElseParser(start int, tokenArray []TokenStruct) (end int, currentNode *No
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
 
-			currentNode.Display = CONDITIONAL_STATEMENT_NON_TERMINAL
+			currentNode.Type = CONDITIONAL_STATEMENT_NON_TERMINAL
 			return end, currentNode, nil
 		}
 	}
@@ -149,7 +149,7 @@ func elseParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
 			//fmt.Println("term parser succeeded at option ",i)
-			currentNode.Display = ELSE_NON_TERMINAL
+			currentNode.Type = ELSE_NON_TERMINAL
 			return end, currentNode, nil
 		}
 	}
@@ -176,7 +176,7 @@ func loopParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node
 	for _, option := range options {
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
-			currentNode.Display = LOOP_STATEMENT_NON_TERMINAL
+			currentNode.Type = LOOP_STATEMENT_NON_TERMINAL
 			return end, currentNode, nil
 		}
 	}
@@ -199,7 +199,7 @@ func funCallParser(start int, tokenArray []TokenStruct) (end int, currentNode *N
 	for _, option := range options {
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
-			currentNode.Display = "funcall"
+			currentNode.Type = "funcall"
 			return end, currentNode, nil
 		}
 	}
@@ -218,7 +218,7 @@ func argsParser(start int, tokenArray []TokenStruct) (end int, currentNode *Node
 	for _, option := range options {
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
-			currentNode.Display = "args"
+			currentNode.Type = "args"
 			return end, currentNode, nil
 		}
 	}
@@ -237,7 +237,7 @@ func arg1Parser(start int, tokenArray []TokenStruct) (end int, currentNode *Node
 	for _, option := range options {
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
-			currentNode.Display = "arg1"
+			currentNode.Type = "arg1"
 			return end, currentNode, nil
 		}
 	}
@@ -259,7 +259,7 @@ func arg2Parser(start int, tokenArray []TokenStruct) (end int, currentNode *Node
 	for _, option := range options {
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
-			currentNode.Display = "arg2"
+			currentNode.Type = "arg2"
 			return end, currentNode, nil
 		}
 	}
@@ -288,7 +288,7 @@ func inlineFunDeclParser(start int, tokenArray []TokenStruct) (end int, currentN
 	for _, option := range options {
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
-			currentNode.Display = "inline_fun_decl"
+			currentNode.Type = "inline_fun_decl"
 			return end, currentNode, nil
 		}
 	}
@@ -321,7 +321,7 @@ func funDeclParser(start int, tokenArray []TokenStruct) (end int, currentNode *N
 	for _, option := range options {
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
-			currentNode.Display = "fun_decl"
+			currentNode.Type = "fun_decl"
 			return end, currentNode, nil
 		}
 	}
@@ -340,7 +340,7 @@ func argsForCallParser(start int, tokenArray []TokenStruct) (end int, currentNod
 	for _, option := range options {
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
-			currentNode.Display = "args"
+			currentNode.Type = "args"
 			return end, currentNode, nil
 		}
 	}
@@ -357,7 +357,7 @@ func arg1ForCallParser(start int, tokenArray []TokenStruct) (end int, currentNod
 	for _, option := range options {
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
-			currentNode.Display = "arg1"
+			currentNode.Type = "arg1"
 			return end, currentNode, nil
 		}
 	}
@@ -377,7 +377,7 @@ func arg2ForCallParser(start int, tokenArray []TokenStruct) (end int, currentNod
 	for _, option := range options {
 		end, currentNode, err = parseSequential(start, option, tokenArray)
 		if err == nil {
-			currentNode.Display = "arg2"
+			currentNode.Type = "arg2"
 			return end, currentNode, nil
 		}
 	}
