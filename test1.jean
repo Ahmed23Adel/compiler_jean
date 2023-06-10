@@ -12,7 +12,7 @@ x = y - 36/4
 	z = ( 5 * 3 ) + ( y  - 4) 
 	ahh = 5*2 +3*(x+4) +15*y 
 }
-m =  u + 9 + f
+m =  u + 9 
 f(x1: int, y1: int): int{ 
     c = y + x
 }
@@ -21,6 +21,11 @@ f2(x1: int, y1: int): int{ x = x1 == y1}
 f(x1: int, y1: int): int{ 
 	l1 : *(4 == 2)? {
 		x = x +1 *6
+		(1 == 1) ? {
+			x20 = 22
+		}!{
+			x20 =  20 *x * 10 /2
+		}
 	}
     d = nah + oops
     x = y + Z

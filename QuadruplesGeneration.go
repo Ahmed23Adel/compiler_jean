@@ -131,7 +131,7 @@ func EvaluateStatement(stmt *Node , TokenArray []TokenStruct , ) (finalQuads []Q
 			else_pos +=1
 			finalQuads = append(finalQuads, Quadruple{Op: "JUMP_IF_NOT" , Arg1: lst , Arg2: "" , Result: strconv.Itoa(else_pos)})
 			finalQuads = append(finalQuads, true_quads...)
-			finalQuads = append(finalQuads, Quadruple{Op: "JUMP" , Arg1: lst , Arg2: "" , Result: strconv.Itoa( len(false_quads)+1)})
+			finalQuads = append(finalQuads, Quadruple{Op: "JUMP" , Arg1: "" , Arg2: "" , Result: strconv.Itoa( len(false_quads)+1)})
 			finalQuads = append(finalQuads, false_quads...)
 		}else {
 			finalQuads = append(finalQuads, Quadruple{Op: "JUMP_IF_NOT" , Arg1: lst , Arg2: "" , Result: strconv.Itoa(else_pos)})
@@ -155,17 +155,17 @@ func EvaluateStatement(stmt *Node , TokenArray []TokenStruct , ) (finalQuads []Q
 		  finalQuads = append(finalQuads, Quadruple{Op: "MOV", Arg1: "LR", Arg2: "", Result: "PC"})
   
 	  }
-	} else if len(stmt.Children) > 1 && stmt.Children[0].Type == LOOP_STATEMENT_NON_TERMINAL {
+	} else if len(stmt.Children) > 0 && stmt.Children[0].Type == LOOP_STATEMENT_NON_TERMINAL {
 		loop := stmt.Children[0]
-		expr := loop.Children[3] 
+		expr := loop.Children[4] 
 		codeIfTrue := loop.Children[8]
 		binaryTree := ExpressionCFG2BinaryTree(expr, TokenArray)
 		condition_quads , lst := EvaluateExpression(binaryTree)
 		finalQuads = append(finalQuads , condition_quads...)
 		true_quads := EvaluateCode(codeIfTrue , TokenArray)
-		finalQuads = append(finalQuads, Quadruple{Op: "JUMP_IF_NOT" , Arg1: lst , Arg2: "" , Result: strconv.Itoa(len(true_quads)+1)})
+		finalQuads = append(finalQuads, Quadruple{Op: "JUMP_IF_NOT" , Arg1: lst , Arg2: "" , Result: strconv.Itoa(len(true_quads)+2)})
 		finalQuads = append(finalQuads, true_quads...)
-		finalQuads = append(finalQuads, Quadruple{Op: "JUMP" , Arg1: lst , Arg2: "" , Result: strconv.Itoa( -len(true_quads))})
+		finalQuads = append(finalQuads, Quadruple{Op: "JUMP" , Arg1: "" , Arg2: "" , Result: strconv.Itoa( -len(true_quads) -2)})
 	}
 	return finalQuads
 }
