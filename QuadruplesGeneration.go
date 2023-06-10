@@ -65,14 +65,13 @@ func ExpressionCFG2BinaryTree(CFG *Node, TokenArray []TokenStruct) *BinaryNode {
 	return parent
 }
 
-func GetStatements(CFG *Node) []*Node {
-	stmts := []*Node{CFG.Children[0]}
-	parent := CFG.Children[1]
-	for len(parent.Children) != 0 {
-		stmts = append(stmts, parent.Children[0])
-		parent = parent.Children[1]
+func GetStatement(CFG *Node) (stmt *Node , next *Node) {
+	stmt = nil
+	if  len(CFG.Children) != 0 {
+		stmt = CFG.Children[0]
+		next = CFG.Children[1]
 	}
-	return stmts
+	return stmt ,next
 }
 
 func EvaluateExpression(CFG *BinaryNode) (quads []Quadruple ,lastVar string ) {
@@ -103,31 +102,39 @@ func EvaluateExpression(CFG *BinaryNode) (quads []Quadruple ,lastVar string ) {
 	return quads , lastVar
 }
 
+func EvaluateStatement(stmt *Node , TokenArray []TokenStruct) (quads []Quadruple ) {
+	quads = []Quadruple{}
+	if len(stmt.Children ) >1  && stmt.Children[1].Type == ASSIGN_TERMINAL {  // assignment statement
+		variable := TokenArray[stmt.Children[0].Start].Val
+		expr := stmt.Children[2] // third is the expression
+		binaryTree := ExpressionCFG2BinaryTree(expr, TokenArray)
+		binaryTree.Visualize()
+		qs , lst := EvaluateExpression(binaryTree)
+		quads = append(qs, Quadruple{Op: "=" , Arg1: lst , Arg2: "" , Result: variable})
+	}
+	return quads
+}
+
 func GenerateQuads(CFG *Node, TokenArray []TokenStruct) (finalQuads []Quadruple) {
 	finalQuads = []Quadruple{}
-	stmts := GetStatements(CFG)
+	stmt , CFG := GetStatement(CFG)
 	print("Length of statements is")
-	println(len(stmts))
+
 	// loop over stmts
-	for _, stmt := range stmts {
+	for stmt != nil  {
 		// assume all statements are assignments
 		// for _, child := range stmt.Children {
 		// 	println(child.Type)
 		// }
-		if len(stmt.Children ) >1  && stmt.Children[1].Type == ASSIGN_TERMINAL {
-			variable := TokenArray[stmt.Children[0].Start].Val
-			expr := stmt.Children[2] // third is the expression
-			binaryTree := ExpressionCFG2BinaryTree(expr, TokenArray)
-			binaryTree.Visualize()
-			quads , lst := EvaluateExpression(binaryTree)
+			
+			quads := EvaluateStatement(stmt , TokenArray)
 			finalQuads = append(finalQuads, quads...)
-			finalQuads = append(finalQuads, Quadruple{Op: "=" , Arg1: lst , Arg2: "" , Result: variable})
-			println("Last var" , lst)
-			for _, quad := range quads {
-				println("Op:", quad.Op ,"Arg1:", quad.Arg1 ,"Arg2:", quad.Arg2 ,"Result:", quad.Result)
-		}
-		}
-		
+			
+			// for _, quad := range quads {
+			// 	println("Op:", quad.Op ,"Arg1:", quad.Arg1 ,"Arg2:", quad.Arg2 ,"Result:", quad.Result)
+			stmt , CFG = GetStatement(CFG)
 	}
+		
+	
 	return finalQuads
 }

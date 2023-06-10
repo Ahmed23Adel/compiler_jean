@@ -16,11 +16,11 @@ func PrintQuadruplesToFile(quads []Quadruple, filename string) error {
 	defer file.Close()
 
 	// Print the header line
-	fmt.Fprintf(file, "%-4s%-8s%-8s%-8s%-8s\n", "Idx", "Op", "Arg1", "Arg2", "Result")
+	fmt.Fprintf(file, "%-8s%-8s%-8s%-8s%-8s\n", "Addr", "Op", "Arg1", "Arg2", "Result")
 
 	// Print the quadruples
 	for i, quad := range quads {
-		fmt.Fprintf(file, "%-4d%-8s%-8s%-8s%-8s\n", i+1, quad.Op, quad.Arg1, quad.Arg2, quad.Result)
+		fmt.Fprintf(file, "%-8d%-8s%-8s%-8s%-8s\n", i+1, quad.Op, quad.Arg1, quad.Arg2, quad.Result)
 	}
 
 	return nil
