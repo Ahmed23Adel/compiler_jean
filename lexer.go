@@ -30,7 +30,7 @@ type Position struct {
 }
 
 func getPossilbeTerminals() []TokenStruct {
-	return []TokenStruct{TokenStruct{Type: RETURN, Val: "return"}, TokenStruct{Type: BREAK, Val: "break"}, TokenStruct{Type: CONINUE, Val: "continue"},
+	return []TokenStruct{TokenStruct{Type: RETURN, Val: "return"}, TokenStruct{Type: BREAK, Val: "break"}, TokenStruct{Type: CONTINUE, Val: "continue"},
 		TokenStruct{Type: FLOAT, Val: "float"}, TokenStruct{Type: INT, Val: "int"}, TokenStruct{Type: CHAR, Val: "char"},
 		TokenStruct{Type: AND, Val: "and"}, TokenStruct{Type: OR, Val: "or"}, TokenStruct{Type: NOT, Val: "not"},
 		TokenStruct{Type: ABS, Val: "abs"}, TokenStruct{Type: SEPARATOR, Val: "\n"}, TokenStruct{Type: SPACE, Val: " "},

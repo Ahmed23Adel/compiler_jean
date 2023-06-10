@@ -1,10 +1,10 @@
 package main
 
 type Node struct {
-	start    int
-	end      int
-	name     string
-	adjacent []*Node
+	Start    int
+	End      int
+	Display  string
+	Children []*Node
 }
 
 const (
@@ -47,9 +47,27 @@ const (
 	LTE                 = "Less than or Equal(<=)"
 	RETURN              = "Return"
 	BREAK               = "Break"
-	CONINUE             = "continue"
+	CONTINUE            = "continue"
 	SPACE               = "space"
 )
+
+const (
+	CODE_NON_TERMINAL                  = "Code"
+	STATEMENT_NON_TERMINAL             = "Statement"
+	EXPRESSION_NON_TERMINAL            = "Expression"
+	FACTOR_NON_TERMINAL                = "Factor"
+	TERM_NON_TERMINAL                  = "Term"
+	CONDITIONAL_STATEMENT_NON_TERMINAL = "Conditional Statement"
+	ELSE_NON_TERMINAL                  = "Else"
+	LOOP_STATEMENT_NON_TERMINAL        = "Loop Statement"
+)
+
+type Quadruple struct {
+	Op     string
+	Arg1   string
+	Arg2   string
+	Result string
+}
 
 type TokenStruct struct {
 	Type Token  //,

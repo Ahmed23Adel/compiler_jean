@@ -2,7 +2,7 @@ code --> stmt code | None   # the whole program
 
 
 # regular statements
-stmt --> var = expr  sep
+stmt --> var = expr  
 
 expr --> term add_op expr
 expr --> term 

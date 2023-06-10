@@ -17,17 +17,17 @@ func printNode(node *Node, visited map[*Node]bool, depth int , tokenArray  []Tok
 	}
 	visited[node] = true
 
-	if len(node.adjacent) == 0 && node.start < len(tokenArray){
-		if node.start == -1 {
-			fmt.Printf("%s ,Contents :  %s \n", node.name , "None") 
+	if len(node.Children) == 0 && node.Start < len(tokenArray){
+		if node.Start == -1 {
+			fmt.Printf("%s ,Contents :  %s \n", node.Display , "None") 
 		} else {
-			fmt.Printf("%s ,type: %s ,Contents :  '%s' \n", node.name ,tokenArray[node.start].Type ,tokenArray[node.start].Val)
+			fmt.Printf("%s ,type: %s ,Contents :  '%s' \n", node.Display ,tokenArray[node.Start].Type ,tokenArray[node.Start].Val)
 		}
 	}else {
-		fmt.Printf("%s \n", node.name ) 
+		fmt.Printf("%s \n", node.Display ) 
 	}
 	
-	for _, adj := range node.adjacent {
+	for _, adj := range node.Children {
 		fmt.Printf("%s%s\n", strings.Repeat(" ", depth*2), "│")  // old "|"
 		fmt.Printf("%s%s", strings.Repeat(" ", depth*2), "├─")  // old "+-"
 		printNode(adj, visited, depth+1 , tokenArray)

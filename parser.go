@@ -20,8 +20,8 @@ func parseSequential(start int ,parsers []parserFunction ,tokenArray  []TokenStr
 				return -1 , nil ,errors.New("failed to parse")
 			}
 			startPoint = end
-			currentNode.adjacent = append(currentNode.adjacent,child)
-			currentNode.end = end
+			currentNode.Children = append(currentNode.Children,child)
+			currentNode.End = end
 		}
 	}
 	return startPoint , currentNode ,nil
