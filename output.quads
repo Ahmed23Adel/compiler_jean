@@ -27,5 +27,15 @@ Addr           Op             Arg1           Arg2           Result
 25             *              5              2              t4             
 26             +              t4             t3             t5             
 27             =              t5                            ahh            
-28             +              u              9              t0             
-29             =              t0                            m              
+28             (              f              )              t0             
+29             +              9              t0             t1             
+30             +              u              t1             t2             
+31             =              t2                            m              
+32             Label functionf                                             
+33             +              y              x              t0             
+34             =              t0                            c              
+35             MOV            LR                            PC             
+36             Label functionf2                                             
+37             ==             x1             y1             t0             
+38             =              t0                            x              
+39             MOV            LR                            PC             

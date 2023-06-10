@@ -12,5 +12,9 @@ x = y - 36/4
 	z = ( 5 * 3 ) + ( y  - 4) 
 	ahh = 5*2 +3*(x+4) +15*y 
 }
-m =  u + 9
+m =  u + 9 
+f(x1: int, y1: int): int{ 
+    c = y + x
+}
+f2(x1: int, y1: int): int{ x = x1 == y1}
 
