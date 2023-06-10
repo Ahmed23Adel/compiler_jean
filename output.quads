@@ -24,3 +24,17 @@ Addr           Op             Arg1           Arg2           Result
 22             *              5              2              t4             
 23             +              t4             t3             t5             
 24             =              t5                            ahh            
+25             +              u              9              t0             
+26             =              t0                            m              
+27             Label functionf                                             
+28             +              nah            oops           t0             
+29             =              t0                            d              
+30             +              y              Z              t0             
+31             =              t0                            x              
+32             MOV            LR                            PC             
+33             Label functionf2                                             
+34             +              x1             y1             t0             
+35             =              t0                            x              
+36             MOV            LR                            PC             
+37             +              u              9              t0             
+38             =              t0                            m              

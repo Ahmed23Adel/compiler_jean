@@ -139,6 +139,22 @@ func EvaluateStatement(stmt *Node , TokenArray []TokenStruct , ) (finalQuads []Q
 		}
 
 		
+	} else if len(stmt.Children) >0 && stmt.Children[0].Type == "fun_decl" {
+
+		if len(stmt.Children[0].Children) > 1 && stmt.Children[0].Children[1].Type == "(" {
+		  // I should get to point after  {
+		  // and write code up till }
+		  //fmt.Println("stmtfUNC", stmt)
+  
+		  finalQuads = append(finalQuads, Quadruple{Op: "Label function" + TokenArray[stmt.Children[0].Children[0].Start].Val, Arg1: "", Arg2: "", Result: ""})
+		  // (*(*(*CFG).Children[0]).Children[0]).Children[7].Start = 0
+		  // finalQuads = GenerateQuads((*(*(*CFG).Children[0]).Children[0]).Children[7], TokenArray, finalQu 
+		  fnCodeQuads := EvaluateCode(stmt.Children[0].Children[7] , TokenArray)
+		  
+		  finalQuads = append(finalQuads, fnCodeQuads...)
+		  finalQuads = append(finalQuads, Quadruple{Op: "MOV", Arg1: "LR", Arg2: "", Result: "PC"})
+  
+	  }
 	}
 	return finalQuads
 }
@@ -152,9 +168,7 @@ func EvaluateCode(CFG *Node, TokenArray []TokenStruct   ) (finalQuads []Quadrupl
 		
 		quads := EvaluateStatement(stmt , TokenArray )
 		finalQuads = append(finalQuads, quads...)
-		
-		// for _, quad := range quads {
-		// 	println("Op:", quad.Op ,"Arg1:", quad.Arg1 ,"Arg2:", quad.Arg2 ,"Result:", quad.Result)
+
 		stmt , CFG = GetStatement(CFG)
 	}
 		
