@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func semanticCheck(arraysWithoutSep []TokenStruct){
+func semanticCheck(arraysWithoutSep []TokenStruct) bool{
 	varArray := []TokenStruct{}
     funArray := []TokenStruct{}
 	//fmt.Println(len(arraysWithoutSep))
@@ -120,10 +120,11 @@ func semanticCheck(arraysWithoutSep []TokenStruct){
 	fmt.Println(".............................................")
 
 	fmt.Println(len(varArray))
-	usageBeforeInitialised(varArray)
+	x := usageBeforeInitialised(varArray)
 	unusage(varArray)
 
-	usageBeforeInitialised(funArray)
+	y := usageBeforeInitialised(funArray)
+	return (x && y)
 
 }
 

@@ -24,7 +24,16 @@ func main() {
 		fmt.Println(token.Type, token.Val)
 	}
 	fmt.Println("Listed all tokens")
-	parseDocument(arraysWithoutSep)
+	cfg := parseDocument(arraysWithoutSep)
+	if cfg != nil {
+		if(semanticCheck(arraysWithoutSep)){
+			quads := EvaluateCode(cfg , arraysWithoutSep )
+			quads = Jump2Goto(quads)
+			PrintQuadruplesToFile(quads , "output.quads")
+		}else{
+			fmt.Println("Sematic errors.")
+		}
+	}
 
 }
 /////////
