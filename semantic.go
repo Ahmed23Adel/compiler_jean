@@ -156,7 +156,7 @@ func usageBeforeInitialised(varArray []TokenStruct) bool {
 					}
 				}
 				if err_flag == 1 {
-					fmt.Println("Variable ",token.Val," used before being initialised!")
+					fmt.Println("Variable ",token.Val," used before being initialised! >> line", (token.Pos.line)+1)
 					no_sem_error = false
 				}
 			}
@@ -200,7 +200,7 @@ func unusage(varArray []TokenStruct) {
 				}
 				//fmt.Println(token.Type, token.Usage, token.Val)
 				if err_flag == 1 {
-					fmt.Println("Unused variable of ",token.Val)
+					fmt.Println("Unused variable of ",token.Val, ">> line", (token.Pos.line)+1)
 				}
 
 			}
